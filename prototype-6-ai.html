@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jon Richards | gorgeguy.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0c0c0f;
+            --bg-surface: #14141a;
+            --bg-elevated: #1c1c24;
+            --neural-blue: #3b82f6;
+            --neural-purple: #8b5cf6;
+            --neural-cyan: #06b6d4;
+            --neural-gradient: linear-gradient(135deg, var(--neural-blue) 0%, var(--neural-purple) 50%, var(--neural-cyan) 100%);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-dim: #52525b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-deep);
+            min-height: 100vh;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Neural network background animation */
+        .neural-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .neural-bg canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Gradient orb */
+        .orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: var(--neural-gradient);
+            filter: blur(150px);
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orb-pulse 8s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes orb-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.15; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Header with AI assistant aesthetic */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .ai-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-elevated);
+            border-radius: 100px;
+            margin-bottom: 2rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .ai-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--neural-purple);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+        }
+
+        .name {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .name-gradient {
+            background: var(--neural-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .role {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .location {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* Chat-style intro */
+        .chat-container {
+            max-width: 700px;
+            margin: 3rem auto;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: message-in 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .chat-message:nth-child(1) { animation-delay: 0.2s; }
+        .chat-message:nth-child(2) { animation-delay: 0.6s; }
+        .chat-message:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes message-in {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .avatar-ai {
+            background: var(--neural-gradient);
+        }
+
+        .avatar-human {
+            background: var(--bg-elevated);
+            border: 1px solid var(--text-dim);
+        }
+
+        .chat-bubble {
+            background: var(--bg-surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border-top-left-radius: 4px;
+            padding: 1rem 1.25rem;
+            max-width: 85%;
+        }
+
+        .chat-bubble.human {
+            background: var(--bg-elevated);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 4px;
+            margin-left: auto;
+        }
+
+        .chat-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .chat-text .highlight {
+            color: var(--neural-cyan);
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.5rem 0;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-dim);
+            border-radius: 50%;
+            animation: typing-bounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing-bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* Navigation as command palette style */
+        .nav-command {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 3rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-surface);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-elevated);
+            border-color: var(--neural-purple);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+        }
+
+        .nav-shortcut {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            color: var(--text-dim);
+        }
+
+        /* Data visualization style sections */
+        .data-section {
+            margin: 4rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--neural-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Experience as data cards */
+        .exp-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .exp-card {
+            background: var(--bg-surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exp-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--neural-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .exp-card:hover {
+            background: var(--bg-elevated);
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateX(4px);
+        }
+
+        .exp-card:hover::before {
+            opacity: 1;
+        }
+
+        .exp-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .exp-company {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exp-dates {
+            font-size: 0.8rem;
+            color: var(--neural-cyan);
+            padding: 0.25rem 0.5rem;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 4px;
+        }
+
+        .exp-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .exp-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+        }
+
+        /* Skills as tags with AI styling */
+        .skills-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: var(--bg-surface);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .skill-tag::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: var(--neural-gradient);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: -1;
+        }
+
+        .skill-tag:hover {
+            border-color: transparent;
+            color: white;
+        }
+
+        .skill-tag:hover::before {
+            opacity: 1;
+        }
+
+        /* Patents as achievement cards */
+        .patents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .patent-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .patent-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--neural-gradient);
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .patent-number {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .patent-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Processing animation */
+        .processing-bar {
+            width: 100%;
+            height: 2px;
+            background: var(--bg-elevated);
+            border-radius: 1px;
+            overflow: hidden;
+            margin: 4rem 0;
+        }
+
+        .processing-fill {
+            width: 30%;
+            height: 100%;
+            background: var(--neural-gradient);
+            animation: process-slide 2s ease-in-out infinite;
+        }
+
+        @keyframes process-slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .footer-brand {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: var(--neural-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-sub {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* Model info badge */
+        .model-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 2rem 1rem; }
+            .chat-avatar { width: 32px; height: 32px; }
+            .nav-shortcut { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Neural network background -->
+    <div class="neural-bg">
+        <canvas id="neural-canvas"></canvas>
+    </div>
+    <div class="orb"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="ai-indicator">
+                <span class="ai-dot"></span>
+                <span>AI-Enhanced Profile</span>
+            </div>
+            <h1 class="name">
+                <span class="name-gradient">Jon Richards</span>
+            </h1>
+            <p class="role">Software Engineer</p>
+            <p class="location">Hood River, Oregon</p>
+        </header>
+
+        <div class="chat-container">
+            <div class="chat-message">
+                <div class="chat-avatar avatar-human">👤</div>
+                <div class="chat-bubble human">
+                    <p class="chat-text">Tell me about yourself.</p>
+                </div>
+            </div>
+
+            <div class="chat-message">
+                <div class="chat-avatar avatar-ai">🤖</div>
+                <div class="chat-bubble">
+                    <p class="chat-text">
+                        I'm passionate about how <span class="highlight">AI is transforming</span> software engineering.
+                        My focus is twofold: helping build products that integrate AI to solve real-world problems,
+                        and bringing <span class="highlight">AI-powered tools</span> into development processes
+                        to dramatically increase engineering velocity and impact.
+                    </p>
+                </div>
+            </div>
+
+            <div class="chat-message">
+                <div class="chat-avatar avatar-ai">🤖</div>
+                <div class="chat-bubble">
+                    <p class="chat-text">
+                        With decades of backend and automation experience, I'm exploring how AI can be used
+                        not just as a feature, but as a <span class="highlight">force multiplier</span> for innovation.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-command">
+            <a href="resume.html" class="nav-item">
+                <span class="nav-icon">📄</span>
+                Resume
+                <span class="nav-shortcut">⌘R</span>
+            </a>
+            <a href="mailto:gorgeguy@gmail.com" class="nav-item">
+                <span class="nav-icon">✉️</span>
+                Contact
+                <span class="nav-shortcut">⌘E</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">💻</span>
+                GitHub
+                <span class="nav-shortcut">⌘G</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🔗</span>
+                LinkedIn
+                <span class="nav-shortcut">⌘L</span>
+            </a>
+        </nav>
+
+        <div class="processing-bar">
+            <div class="processing-fill"></div>
+        </div>
+
+        <section class="data-section">
+            <div class="section-header">
+                <div class="section-icon">💼</div>
+                <h2 class="section-title">Experience</h2>
+            </div>
+            <div class="exp-grid">
+                <article class="exp-card">
+                    <div class="exp-meta">
+                        <h3 class="exp-company">Oracle Corporation</h3>
+                        <span class="exp-dates">1999–2025</span>
+                    </div>
+                    <p class="exp-role">Software Engineer • Hillsboro, OR</p>
+                    <p class="exp-desc">
+                        OCI Region Build Automation teams, creating applications for worldwide data center construction.
+                        Led PXE-based device installation. Automated full-rack backup workflows—iteration time reduced from 5 days to 5 hours.
+                        Designed benchmarking frameworks for OCI Digital Media Services.
+                    </p>
+                </article>
+                <article class="exp-card">
+                    <div class="exp-meta">
+                        <h3 class="exp-company">Informix Corporation</h3>
+                        <span class="exp-dates">1993–1999</span>
+                    </div>
+                    <p class="exp-role">Software Engineer • Portland, OR</p>
+                    <p class="exp-desc">
+                        Non-preemptive threading library in assembly for SMP architectures used in RDBMS kernel.
+                        Real-time graphical SQL monitoring. Binary Large Object storage and transactional logging subsystems.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section class="data-section">
+            <div class="section-header">
+                <div class="section-icon">🧠</div>
+                <h2 class="section-title">Skills</h2>
+            </div>
+            <div class="skills-cloud">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">Bash</span>
+                <span class="skill-tag">C</span>
+                <span class="skill-tag">Java</span>
+                <span class="skill-tag">SQL</span>
+                <span class="skill-tag">Linux</span>
+                <span class="skill-tag">OCI</span>
+                <span class="skill-tag">Docker</span>
+                <span class="skill-tag">Claude Code</span>
+                <span class="skill-tag">AI Integration</span>
+                <span class="skill-tag">Backend Automation</span>
+            </div>
+        </section>
+
+        <section class="data-section">
+            <div class="section-header">
+                <div class="section-icon">🏆</div>
+                <h2 class="section-title">Patents</h2>
+            </div>
+            <div class="patents-grid">
+                <div class="patent-card">
+                    <span class="patent-badge">GRANTED</span>
+                    <p class="patent-number">US 9,690,607</p>
+                    <p class="patent-title">Automated VM assembly and deployment (2017)</p>
+                </div>
+                <div class="patent-card">
+                    <span class="patent-badge">GRANTED</span>
+                    <p class="patent-number">US 9,612,803</p>
+                    <p class="patent-title">Multi-node virtual appliance construction (2017)</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="footer-brand">gorgeguy.com</p>
+            <p class="footer-sub">B.S. Computer Science • Portland State University</p>
+            <div class="model-info">
+                <span class="ai-dot"></span>
+                Powered by curiosity & AI
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Neural network animation
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const nodes = [];
+        const nodeCount = 50;
+
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.15 * (1 - dist / 150)})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw and update nodes
+            nodes.forEach(node => {
+                // Draw node
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.5)';
+                ctx.fill();
+
+                // Update position
+                node.x += node.vx;
+                node.y += node.vy;
+
+                // Bounce off edges
+                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
