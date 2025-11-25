@@ -1,2 +1,2 @@
 # gorgeguy-home
-www.gorgeguy.com
+Source code for https://gorgeguy.com
