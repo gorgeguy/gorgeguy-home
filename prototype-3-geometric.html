@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jon Richards | gorgeguy.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d0d0d;
+            --bg-card: #161616;
+            --accent-gold: #d4af37;
+            --accent-copper: #b87333;
+            --accent-teal: #2dd4bf;
+            --text-white: #fafafa;
+            --text-gray: #888;
+            --text-dim: #555;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* Animated geometric background */
+        .geo-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .geo-shape {
+            position: absolute;
+            border: 1px solid var(--accent-gold);
+            opacity: 0.15;
+        }
+
+        .geo-shape.circle {
+            border-radius: 50%;
+            animation: rotate 30s linear infinite;
+        }
+
+        .geo-shape.square {
+            animation: rotate 25s linear infinite reverse;
+        }
+
+        .geo-shape.triangle {
+            width: 0 !important;
+            height: 0 !important;
+            border: none;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 173px solid transparent;
+            border-bottom-color: rgba(212, 175, 55, 0.1);
+            animation: float 15s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Header with dramatic typography */
+        .header {
+            text-align: center;
+            margin-bottom: 5rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '//';
+            position: absolute;
+            top: -2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 6rem;
+            color: var(--accent-gold);
+            opacity: 0.1;
+            font-weight: 300;
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-white) 0%, var(--accent-gold) 50%, var(--accent-copper) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .title-line::before,
+        .title-line::after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .role {
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+        }
+
+        .location {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+        }
+
+        /* Intro section with code aesthetic */
+        .intro {
+            background: var(--bg-card);
+            border-left: 3px solid var(--accent-gold);
+            padding: 2rem;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .intro::before {
+            content: '/**';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .intro::after {
+            content: '*/';
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .intro-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            line-height: 1.9;
+            font-style: italic;
+            color: var(--text-gray);
+            padding: 0 2rem;
+        }
+
+        .intro-text .emphasis {
+            color: var(--accent-teal);
+            font-style: normal;
+        }
+
+        /* Navigation as elegant links */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.8rem 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-teal));
+            transition: width 0.4s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-gold);
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        /* Experience with geometric cards */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--accent-gold);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        .experience-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .exp-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .exp-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-copper), var(--accent-teal));
+        }
+
+        .exp-card::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--text-dim);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .exp-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .exp-company {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-white);
+        }
+
+        .exp-dates {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            letter-spacing: 0.1em;
+        }
+
+        .exp-role {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .exp-description {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        /* Skills as elegant tags */
+        .skills-section {
+            margin: 4rem 0;
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-tag {
+            padding: 0.6rem 1.5rem;
+            border: 1px solid var(--text-dim);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .skill-tag:hover::before {
+            left: 100%;
+        }
+
+        /* Patents with special styling */
+        .patents {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .patent-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a1a 100%);
+            padding: 1.5rem;
+            border: 1px solid var(--text-dim);
+            position: relative;
+        }
+
+        .patent-card::before {
+            content: 'US PATENT';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--accent-gold);
+            background: var(--bg-primary);
+            padding: 0 10px;
+        }
+
+        .patent-number {
+            font-size: 1.2rem;
+            color: var(--text-white);
+            margin-bottom: 0.5rem;
+        }
+
+        .patent-title {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--text-dim);
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 0.2em;
+        }
+
+        /* Decorative elements */
+        .corner-decoration {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            border: 1px solid var(--accent-gold);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .corner-decoration.top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-decoration.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 2rem 1rem; }
+            .intro { padding: 1.5rem; }
+            .intro-text { padding: 0 1rem; font-size: 1.1rem; }
+            .nav { gap: 1.5rem; }
+            .exp-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Geometric background shapes -->
+    <div class="geo-bg">
+        <div class="geo-shape circle" style="width: 400px; height: 400px; top: -100px; left: -100px;"></div>
+        <div class="geo-shape circle" style="width: 300px; height: 300px; top: 50%; right: -80px;"></div>
+        <div class="geo-shape square" style="width: 200px; height: 200px; bottom: 20%; left: 10%;"></div>
+        <div class="geo-shape triangle" style="top: 60%; left: 60%;"></div>
+    </div>
+
+    <div class="corner-decoration top-left"></div>
+    <div class="corner-decoration bottom-right"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="name">Jon Richards</h1>
+            <div class="title-line">
+                <span class="role">Software Engineer</span>
+            </div>
+            <p class="location">Hood River, Oregon</p>
+        </header>
+
+        <section class="intro">
+            <p class="intro-text">
+                Passionate about how <span class="emphasis">AI is transforming</span> software engineering.
+                My focus is twofold: helping build products that integrate AI to solve real-world problems,
+                and bringing <span class="emphasis">AI-powered tools</span> into development processes
+                to dramatically increase engineering velocity and impact.
+            </p>
+        </section>
+
+        <nav class="nav">
+            <a href="resume.html" class="nav-link">Resume</a>
+            <a href="mailto:gorgeguy@gmail.com" class="nav-link">Contact</a>
+            <a href="#" class="nav-link">GitHub</a>
+            <a href="#" class="nav-link">LinkedIn</a>
+        </nav>
+
+        <section class="experience-grid">
+            <h2 class="section-title">Experience</h2>
+
+            <article class="exp-card">
+                <div class="exp-header">
+                    <h3 class="exp-company">Oracle Corporation</h3>
+                    <span class="exp-dates">1999 — 2025</span>
+                </div>
+                <p class="exp-role">Software Engineer • Hillsboro, OR</p>
+                <p class="exp-description">
+                    OCI Region Build Automation teams, creating applications for worldwide data center construction.
+                    Led PXE-based device installation utilities. Automated full-rack backup workflows,
+                    cutting iteration time from 5 days to 5 hours. Designed benchmarking frameworks for OCI Digital Media Services.
+                </p>
+            </article>
+
+            <article class="exp-card">
+                <div class="exp-header">
+                    <h3 class="exp-company">Informix Corporation</h3>
+                    <span class="exp-dates">1993 — 1999</span>
+                </div>
+                <p class="exp-role">Software Engineer • Portland, OR</p>
+                <p class="exp-description">
+                    Developed non-preemptive threading library in assembly for SMP architectures used in RDBMS kernel development.
+                    Built real-time graphical tool for monitoring parallel SQL queries.
+                    Implemented Binary Large Object storage and transactional logging subsystems.
+                </p>
+            </article>
+        </section>
+
+        <section class="skills-section">
+            <h2 class="section-title">Capabilities</h2>
+            <div class="skills-grid">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">Bash</span>
+                <span class="skill-tag">C</span>
+                <span class="skill-tag">Java</span>
+                <span class="skill-tag">SQL</span>
+                <span class="skill-tag">Linux</span>
+                <span class="skill-tag">OCI</span>
+                <span class="skill-tag">Docker</span>
+                <span class="skill-tag">Claude Code</span>
+                <span class="skill-tag">AI Integration</span>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Patents</h2>
+            <div class="patents">
+                <div class="patent-card">
+                    <p class="patent-number">9,690,607</p>
+                    <p class="patent-title">Automated VM assembly and deployment (2017)</p>
+                </div>
+                <div class="patent-card">
+                    <p class="patent-number">9,612,803</p>
+                    <p class="patent-title">Multi-node virtual appliance construction (2017)</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="footer-logo">gorgeguy</p>
+            <p class="footer-text">Portland State University • B.S. Computer Science</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add parallax effect to geometric shapes
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.geo-shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            shapes.forEach((shape, i) => {
+                const speed = (i + 1) * 10;
+                shape.style.transform = `translate(${x * speed}px, ${y * speed}px) rotate(${x * 20}deg)`;
+            });
+        });
+    </script>
+</body>
+</html>
