@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Reviewer Into</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      max-width: 900px;
+      margin: 48px auto;
+      padding: 0 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #111;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin-top: 2em;
+    }
+
+    h1 { margin-top: 0; }
+
+    hr {
+      margin: 3em 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+
+    code {
+      background: #f6f8fa;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 0.95em;
+    }
+
+    pre {
+      background: #f6f8fa;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+<h1>PB Tourney — Reviewer Introduction</h1>
+<h2>Executive Summary (For Busy Reviewers)</h2>
+<p>PB Tourney is an attempt to make <strong>small, local pickleball tournaments easier to run and easier to play</strong>.</p>
+<p>If you’ve been part of local tournaments, you’ve probably seen the same challenges: a director overloaded with questions, players waiting to report scores or find their next match, and limited visibility into standings until everything is over. PB Tourney aims to reduce that friction by making score reporting, match discovery, and tournament status <strong>self-service and always up to date</strong>.</p>
+<p>The goal is simple: take routine load off the director and give players clearer, faster answers.</p>
+<h2>How to Review This</h2>
+<p>As you review PB Tourney, think about it from the perspective of someone <em>running</em> or <em>playing</em> in a real tournament. Consider whether the problems described here match what you’ve seen in practice, whether the objectives align with what actually matters during live play, and whether this approach would make tournaments feel more fluid for players and directors.</p>
+<p>Feedback of all kinds is welcome — including ideas about features, usability, and polish — especially when tied back to how they would improve the real tournament experience. Even quick, instinctive reactions are valuable.</p>
+<hr />
+<h2>Purpose of This Document</h2>
+<p>This document is intended for <strong>experienced pickleball players and tournament directors</strong> who are reviewing PB Tourney. A technical background is <em>not</em> required.</p>
+<p>The purpose of this document is to ask a very specific kind of feedback:</p>
+<ul>
+<li>Does this accurately describe the problems you experience running or playing in local tournaments?</li>
+<li>Are the objectives the <em>right</em> ones?</li>
+<li>Does the application, as designed so far, meaningfully improve the experience for both players and directors?</li>
+</ul>
+<p>Rather than focusing on software details, this document frames PB Tourney in terms of <strong>real tournament workflows</strong>, <strong>human bottlenecks</strong>, and <strong>information flow during live play</strong>.</p>
+<hr />
+<h2>The Environment PB Tourney Is Built For</h2>
+<p>PB Tourney is designed primarily for <strong>small, local pickleball tournaments</strong> — often run by clubs or volunteers — where:</p>
+<ul>
+<li>Tournaments are informal or semi-formal</li>
+<li>Directors often juggle many responsibilities alone</li>
+<li>Players are accustomed to asking questions in person</li>
+<li>Pen-and-paper systems (clipboards, printed sheets, pencil scores) are still common</li>
+</ul>
+<p>The continued use of manual systems is taken as a signal that existing software solutions may be:
+- Too expensive
+- Too complex
+- Or poorly matched to how these tournaments actually run</p>
+<p>PB Tourney intentionally targets this lower end of the spectrum.</p>
+<hr />
+<h2>The Two Primary Roles</h2>
+<p>PB Tourney is designed around two roles:</p>
+<ul>
+<li><strong>Players</strong> — participants focused on playing matches with minimal administrative friction</li>
+<li><strong>Tournament Directors</strong> — organizers responsible for setup, scheduling, scoring, and flow</li>
+</ul>
+<p>Each role has distinct needs, especially during <em>live tournament play</em>.</p>
+<hr />
+<h2>Player Needs During a Tournament</h2>
+<p>From a player’s perspective, a tournament system should reliably answer three questions at all times:</p>
+<ol>
+<li><strong>How do I report my score?</strong></li>
+<li>Players need a fast, unambiguous way to submit match results</li>
+<li>
+<p>Reporting should not require tracking down the director</p>
+</li>
+<li>
+<p><strong>What is my next match?</strong></p>
+</li>
+<li>Who am I playing?</li>
+<li>When is the match ready to start?</li>
+<li>
+<p>Which court should I go to?</p>
+</li>
+<li>
+<p><strong>Where do I stand in the tournament?</strong></p>
+</li>
+<li>Current rankings or standings</li>
+<li>Tournament progress</li>
+<li>Elimination status (when applicable)</li>
+</ol>
+<p>In many local tournaments today, players satisfy these needs by repeatedly visiting the director — reporting scores, asking questions, and returning later when matches are not yet ready. PB Tourney aims to reduce this uncertainty and waiting.</p>
+<hr />
+<h2>Tournament Director Needs</h2>
+<p>Tournament directors typically want to:</p>
+<ul>
+<li>Get players signed up prior to the tournament</li>
+<li>Define the tournament format (number of rounds, number of courts)</li>
+<li>Schedule matches</li>
+<li>Assign matches to courts</li>
+<li>Record scores accurately</li>
+<li>Keep the tournament moving smoothly</li>
+</ul>
+<p>In small tournaments, all of this often happens with a clipboard as the single source of truth. Directors are frequently interrupted by players asking questions, which increases cognitive load and slows overall flow.</p>
+<p>PB Tourney is designed to offload routine questions and score reporting to the system, allowing directors to focus on oversight and exceptions rather than constant manual updates.</p>
+<hr />
+<h2>What Is PB Tourney?</h2>
+<p>PB Tourney is a <strong>web-based pickleball tournament management application</strong> designed to support <em>live tournament execution</em>.</p>
+<p>Key characteristics:
+- Mobile-friendly web application (with native mobile apps planned, especially for players)
+- Real-time updates so information reflects the current state of play
+- Player self-service for score reporting and match discovery
+- Designed to improve clarity and flow during live tournaments</p>
+<p>Although the domain is pickleball, many of the challenges PB Tourney addresses — coordination, state changes, and reducing human bottlenecks — are broadly applicable.</p>
+<hr />
+<h2>Core Objectives</h2>
+<p>PB Tourney is built around a small set of explicit objectives:</p>
+<ul>
+<li>Reduce the operational load on tournament directors</li>
+<li>Give players self-service access to the information they need</li>
+<li>Make the current state of the tournament obvious and trustworthy</li>
+<li>Improve flow by reducing waiting, ambiguity, and repeated interruptions</li>
+</ul>
+<p>Design decisions should be evaluated against how well they support these goals.</p>
+<hr />
+<h2>What Feedback Is Most Valuable</h2>
+<p>As a reviewer, feedback is especially valuable on:</p>
+<ul>
+<li>Whether the problem statement reflects your real experience</li>
+<li>Whether the objectives match what <em>actually</em> matters during tournaments</li>
+<li>Where the application succeeds or falls short in meeting those objectives</li>
+<li>What feels unnecessary, missing, or mismatched to local tournament reality</li>
+</ul>
+<p>Feedback does <em>not</em> need to be technical to be useful.</p>
+<hr />
+<h2>Where This Could Go</h2>
+<p>PB Tourney is an evolving project. There is an intent to eventually <strong>monetize</strong> the application, but the specific model is intentionally undecided.</p>
+<p>No formal market or competitive analysis has been done yet. This is deliberate. The current focus is on:</p>
+<ul>
+<li>Understanding the problem deeply</li>
+<li>Exploring solutions creatively</li>
+<li>Building something that genuinely improves local tournaments</li>
+</ul>
+<p>The belief motivating this work is that modern AI-assisted development can enable a small effort to compete on <strong>cost, iteration speed, and focus</strong>, especially at the lower end of the market where existing solutions may not fit well.</p>
+<p>Reviewer perspective on whether this direction makes sense — or misses something important — is especially welcome.</p>
+<hr />
+<h2>Thank You</h2>
+<p>Thank you for taking the time to review PB Tourney. Your perspective as a player or director is essential to shaping whether this project is solving the <em>right</em> problems in the <em>right</em> way.</p>
+</body>
+</html>
