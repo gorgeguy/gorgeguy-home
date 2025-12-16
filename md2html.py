@@ -73,7 +73,7 @@ def main():
     }}
 
     img {{
-      max-width: 100%;
+      max-width: 50%;
       height: auto;
       border-radius: 8px;
     }}
