@@ -1,6 +1,6 @@
 # PB Tourney — Reviewer Introduction
 
-## Executive Summary (For Busy Reviewers)
+## Overiew
 PB Tourney is an attempt to make **small, local pickleball tournaments easier to run and easier to play**.
 
 In many local tournaments today, directors rely on clipboards and verbal updates. Players report scores in person, check in to see when their next match is ready, and often have limited visibility into standings until the end. PB Tourney aims to reduce that friction by making score reporting, match discovery, and tournament status **self-service and always up to date**.
@@ -64,7 +64,7 @@ Consider whether the problems described here match your experience, whether the 
 
 ---
 
-## Where This Could Go
+## Future Direction
 PB Tourney is an evolving project with an intent to eventually **monetize**, though the specific model is undecided.
 
 No formal market analysis has been done yet by design. The current focus is on building something that genuinely improves local tournaments, with the belief that modern AI-assisted development can compete effectively on cost and speed at the lower end of the market.
