@@ -13,23 +13,26 @@ The goal is simple: take routine load off the director and give players clearer,
 Local tournaments often work well, but they place a lot of responsibility on the tournament director.
 
 Common challenges include:
-- One person informally coordinating scores, match readiness, and questions
-- Players checking in to report scores or ask about upcoming matches
-- Natural pauses while waiting for matches to become ready
-- Limited visibility into standings and overall tournament progress during play
+* One person informally coordinating scores, match readiness, and questions
+* Players checking in to report scores or ask about upcoming matches
+* Natural pauses while waiting for matches to become ready
+* Limited visibility into standings and overall tournament progress during play
 
 These dynamics are understandable in small, volunteer-run tournaments, but they can slow things down and make it harder for everyone to see what’s happening at any given moment.
 
 ---
 
 ## What PB Tourney Is
-PB Tourney is a **web-based tournament management application** designed specifically for live execution of small, local pickleball tournaments.
+PB Tourney is a **tournament management application** designed
+specifically for live execution of small, local pickleball
+tournaments. It is currently a browser-based web application but
+native mobile apps for both iOS and Android are planned.
 
 It is built around a few core objectives:
-- Reduce operational load on tournament directors
-- Give players self-service access to scores, next matches, and standings
-- Make the current state of the tournament clear and trustworthy
-- Improve overall flow by reducing waiting and repeated interruptions
+  - Reduce operational load on tournament directors
+  - Give players self-service access to scores, next matches, and standings
+  - Make the current state of the tournament clear and trustworthy
+  - Improve overall flow by reducing waiting and repeated interruptions
 
 ---
 
