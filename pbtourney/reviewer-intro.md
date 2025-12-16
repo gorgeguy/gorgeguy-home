@@ -4,7 +4,8 @@
 
 PB Tourney is an attempt to make **small, local pickleball tournaments easier to run and easier to play**.
 
-In many local tournaments today, directors rely on clipboards and verbal updates. Players report scores in person, check
+In the few pickleball tournaments, directors rely on clipboards and verbal updates. Players report scores in person, 
+check
 in to see when their next match is ready, and often have limited visibility into standings until the end. PB Tourney
 aims to reduce that friction by making score reporting, match discovery, and tournament status **self-service and always
 up to date**.
@@ -14,6 +15,8 @@ The goal is simple: take routine load off the director and give players clearer,
 ---
 
 ## The Problem
+
+![Round robin bracket sheets used in local tournaments](round-robin-sheets.jpg)
 
 Local tournaments often work well, but they place a lot of responsibility on the tournament director.
 
