@@ -13,6 +13,7 @@ The goal is simple: take routine load off the director and give players clearer,
 Local tournaments often work well, but they place a lot of responsibility on the tournament director.
 
 Common challenges include:
+
 * One person informally coordinating scores, match readiness, and questions
 * Players checking in to report scores or ask about upcoming matches
 * Natural pauses while waiting for matches to become ready
@@ -29,10 +30,11 @@ tournaments. It is currently a browser-based web application but
 native mobile apps for both iOS and Android are planned.
 
 It is built around a few core objectives:
-  - Reduce operational load on tournament directors
-  - Give players self-service access to scores, next matches, and standings
-  - Make the current state of the tournament clear and trustworthy
-  - Improve overall flow by reducing waiting and repeated interruptions
+
+- Reduce operational load on tournament directors
+- Give players self-service access to scores, next matches, and standings
+- Make the current state of the tournament clear and trustworthy
+- Improve overall flow by reducing waiting and repeated interruptions
 
 ---
 
@@ -40,11 +42,13 @@ It is built around a few core objectives:
 PB Tourney is designed around two roles.
 
 **Players need:**
+
 - A simple way to report match scores themselves
 - Clear, up-to-date information about their next match (opponents and court)
 - Visibility into standings and tournament progress during play
 
 **Tournament Directors need:**
+
 - A way to get players signed up before the tournament
 - Tools to define format (rounds and courts)
 - Help scheduling matches and assigning courts
