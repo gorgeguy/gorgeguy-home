@@ -46,11 +46,17 @@ _AI-Accelerated Development | Nov–Dec 2025_
 ---
 
 ### **Skills**
+
 **Languages:** Python, TypeScript, Bash, C, Java, SQL
+
 **Backend:** FastAPI, SQLAlchemy, Pydantic, REST APIs, JWT, PostgreSQL
+
 **Frontend:** React, TanStack Query, Tailwind CSS, Vite
+
 **DevOps:** Docker, GitHub Actions, CI/CD, Fly.io, Linux, OCI
+
 **Tools:** Claude Code, VS Code, Cursor, Git, pytest, Ruff, Pyright
+
 **Patterns:** Repository Pattern, Dependency Injection, TDD, Domain-Driven Design
 
 ---
