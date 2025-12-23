@@ -251,6 +251,65 @@
             color: var(--phosphor-dim);
         }
 
+        .project {
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-name {
+            font-size: 1.2rem;
+            color: var(--phosphor-green);
+        }
+
+        .project-subtitle {
+            font-size: 0.9rem;
+            color: var(--phosphor-dim);
+        }
+
+        .project-description {
+            font-size: 1rem;
+            color: var(--phosphor-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-bullets {
+            list-style: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .project-bullets li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .project-bullets li::before {
+            content: '-';
+            position: absolute;
+            left: 0;
+            color: var(--phosphor-dim);
+        }
+
+        .project-bullets a {
+            color: var(--phosphor-green);
+            text-decoration: none;
+        }
+
+        .project-bullets a:hover {
+            text-decoration: underline;
+        }
+
         .skills-grid {
             display: grid;
             grid-template-columns: auto 1fr;
@@ -435,6 +494,27 @@
                                 <li>Developed non-preemptive threading library in assembly for SMP architectures used in RDBMS kernel development.</li>
                                 <li>Built real-time graphical tool for monitoring parallel SQL queries.</li>
                                 <li>Implemented Binary Large Object (BLOB) storage and enhanced transactional logging subsystems.</li>
+                            </ul>
+                        </div>
+
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Projects</h2>
+
+                        <div class="project">
+                            <div class="project-header">
+                                <span class="project-name">PB Tourney</span>
+                                <span class="project-subtitle">AI-Accelerated Development | Nov–Dec 2025</span>
+                            </div>
+                            <p class="project-description">Full-Stack Tournament Management System</p>
+                            <ul class="project-bullets">
+                                <li>Built production-ready tournament management application in 51 days with entirely AI-assisted implementation using Claude Code — 262 commits, 32K lines of code, 382 automated tests.</li>
+                                <li>Backend: Python 3.12, FastAPI, SQLAlchemy 2.0, Pydantic, JWT authentication, PostgreSQL</li>
+                                <li>Frontend: React 19, TypeScript, TanStack Query, React Hook Form, Tailwind CSS, Vite</li>
+                                <li>DevOps: Docker multi-stage builds, GitHub Actions CI/CD, Fly.io deployment, Caddy</li>
+                                <li>Architecture: Repository pattern, dependency injection, domain-driven design, comprehensive test coverage</li>
+                                <li>[Project Details](https://github.com/gorgeguy/gorgeguy-home/blob/main/projects/PBTOURNEY.md)</li>
                             </ul>
                         </div>
 
