@@ -717,15 +717,265 @@ def generate_html(sections: dict) -> str:
     return html
 
 
-def generate_pdf(html_content: str, output_path: Path) -> None:
-    """Generate PDF from HTML content using weasyprint."""
+def generate_pdf_html(sections: dict) -> str:
+    """Generate clean, professional HTML for PDF output."""
+
+    # Generate experience HTML
+    experience_html = ""
+    for job in sections["experience"]:
+        duties_html = "\n".join(f"<li>{duty}</li>" for duty in job["duties"])
+        experience_html += f"""
+            <div class="job">
+                <div class="job-header">
+                    <span class="company">{job['company']}</span>
+                    <span class="dates">{job['dates']} | {job['location']}</span>
+                </div>
+                <div class="title">{job['title']}</div>
+                <ul>{duties_html}</ul>
+            </div>
+"""
+
+    # Generate projects HTML
+    projects_html = ""
+    for project in sections["projects"]:
+        bullets_html = "\n".join(f"<li>{bullet}</li>" for bullet in project["bullets"])
+        projects_html += f"""
+            <div class="project">
+                <div class="project-header">
+                    <span class="name">{project['name']}</span>
+                    <span class="subtitle">{project['subtitle']}</span>
+                </div>
+                <div class="description">{project['description']}</div>
+                <ul>{bullets_html}</ul>
+            </div>
+"""
+
+    # Generate skills HTML
+    skills_html = ""
+    for label, value in sections["skills"].items():
+        skills_html += f"<div class='skill-row'><span class='label'>{label}:</span> {value}</div>\n"
+
+    # Generate patents HTML
+    patents_html = ""
+    for patent in sections["patents"]:
+        patents_html += f"<li><strong>{patent['number']}</strong> — {patent['title']}</li>\n"
+
+    html = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume | {sections['name']}</title>
+    <style>
+        @page {{
+            size: letter;
+            margin: 0.6in 0.7in;
+        }}
+
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+
+        body {{
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+        }}
+
+        header {{
+            text-align: center;
+            margin-bottom: 16pt;
+            padding-bottom: 10pt;
+            border-bottom: 2pt solid #333;
+        }}
+
+        h1 {{
+            font-size: 22pt;
+            font-weight: 700;
+            margin-bottom: 4pt;
+            color: #000;
+        }}
+
+        .title {{
+            font-size: 12pt;
+            color: #555;
+            margin-bottom: 4pt;
+        }}
+
+        .contact {{
+            font-size: 10pt;
+            color: #555;
+        }}
+
+        .contact a {{
+            color: #0066cc;
+            text-decoration: none;
+        }}
+
+        section {{
+            margin-bottom: 14pt;
+        }}
+
+        h2 {{
+            font-size: 12pt;
+            font-weight: 700;
+            color: #000;
+            border-bottom: 1pt solid #ccc;
+            padding-bottom: 3pt;
+            margin-bottom: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }}
+
+        .summary {{
+            font-size: 10pt;
+            color: #444;
+            text-align: justify;
+        }}
+
+        .job, .project {{
+            margin-bottom: 10pt;
+        }}
+
+        .job-header, .project-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }}
+
+        .company, .name {{
+            font-weight: 700;
+            font-size: 11pt;
+            color: #000;
+        }}
+
+        .dates, .subtitle {{
+            font-size: 9pt;
+            color: #666;
+        }}
+
+        .job .title {{
+            font-style: italic;
+            color: #555;
+            margin-bottom: 4pt;
+        }}
+
+        .project .description {{
+            font-style: italic;
+            color: #555;
+            margin-bottom: 4pt;
+        }}
+
+        ul {{
+            margin-left: 18pt;
+            margin-top: 4pt;
+        }}
+
+        li {{
+            margin-bottom: 2pt;
+        }}
+
+        .skills {{
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3pt;
+        }}
+
+        .skill-row {{
+            font-size: 10pt;
+        }}
+
+        .skill-row .label {{
+            font-weight: 600;
+        }}
+
+        .patents ul {{
+            list-style-type: none;
+            margin-left: 0;
+        }}
+
+        .patents li {{
+            margin-bottom: 3pt;
+        }}
+
+        .education {{
+            font-size: 10pt;
+        }}
+
+        .focus {{
+            font-size: 10pt;
+            color: #444;
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{sections['name']}</h1>
+        <div class="title">{sections['title']}</div>
+        <div class="contact">
+            {sections['location']} |
+            <a href="mailto:{sections['email']}">{sections['email']}</a>
+        </div>
+    </header>
+
+    <section>
+        <h2>Summary</h2>
+        <p class="summary">{sections['summary']}</p>
+    </section>
+
+    <section>
+        <h2>Experience</h2>
+{experience_html}
+    </section>
+
+    <section>
+        <h2>Projects</h2>
+{projects_html}
+    </section>
+
+    <section>
+        <h2>Skills</h2>
+        <div class="skills">
+{skills_html}
+        </div>
+    </section>
+
+    <section class="patents">
+        <h2>Patents</h2>
+        <ul>
+{patents_html}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Education</h2>
+        <p class="education">{sections['education']}</p>
+    </section>
+
+    <section>
+        <h2>Current Focus</h2>
+        <p class="focus">{sections['current_focus']}</p>
+    </section>
+</body>
+</html>
+'''
+    return html
+
+
+def generate_pdf(sections: dict, output_path: Path) -> None:
+    """Generate PDF from sections using clean professional template."""
     try:
         from weasyprint import HTML
     except ImportError:
         print("Error: weasyprint not installed. Run: uv add weasyprint")
         raise SystemExit(1)
 
-    print(f"Generating PDF at {output_path}...")
+    print("Generating professional PDF template...")
+    html_content = generate_pdf_html(sections)
+
+    print(f"Writing PDF to {output_path}...")
     HTML(string=html_content).write_pdf(output_path)
 
 
@@ -770,7 +1020,7 @@ def main():
         print("Done! resume.html has been generated.")
 
     if args.pdf or args.pdf_only:
-        generate_pdf(html, resume_pdf_path)
+        generate_pdf(sections, resume_pdf_path)
         print("Done! resume.pdf has been generated.")
 
     return 0
