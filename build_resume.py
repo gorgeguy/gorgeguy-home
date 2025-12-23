@@ -15,6 +15,11 @@ import re
 from pathlib import Path
 
 
+def md_links_to_html(text: str) -> str:
+    """Convert markdown links [text](url) to HTML <a> tags."""
+    return re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+
+
 def parse_resume_md(content: str) -> dict:
     """Parse RESUME.md content into structured sections."""
     sections = {
@@ -153,7 +158,7 @@ def generate_html(sections: dict) -> str:
     experience_html = ""
     for job in sections["experience"]:
         duties_html = "\n".join(
-            f"                                <li>{duty}</li>" for duty in job["duties"]
+            f"                                <li>{md_links_to_html(duty)}</li>" for duty in job["duties"]
         )
         experience_html += f"""
                         <div class="job">
@@ -172,7 +177,7 @@ def generate_html(sections: dict) -> str:
     projects_html = ""
     for project in sections["projects"]:
         bullets_html = "\n".join(
-            f"                                <li>{bullet}</li>" for bullet in project["bullets"]
+            f"                                <li>{md_links_to_html(bullet)}</li>" for bullet in project["bullets"]
         )
         projects_html += f"""
                         <div class="project">
@@ -723,7 +728,7 @@ def generate_pdf_html(sections: dict) -> str:
     # Generate experience HTML
     experience_html = ""
     for job in sections["experience"]:
-        duties_html = "\n".join(f"<li>{duty}</li>" for duty in job["duties"])
+        duties_html = "\n".join(f"<li>{md_links_to_html(duty)}</li>" for duty in job["duties"])
         experience_html += f"""
             <div class="job">
                 <div class="job-header">
@@ -738,7 +743,7 @@ def generate_pdf_html(sections: dict) -> str:
     # Generate projects HTML
     projects_html = ""
     for project in sections["projects"]:
-        bullets_html = "\n".join(f"<li>{bullet}</li>" for bullet in project["bullets"])
+        bullets_html = "\n".join(f"<li>{md_links_to_html(bullet)}</li>" for bullet in project["bullets"])
         projects_html += f"""
             <div class="project">
                 <div class="project-header">
