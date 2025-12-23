@@ -16,8 +16,8 @@ from pathlib import Path
 
 
 def md_links_to_html(text: str) -> str:
-    """Convert markdown links [text](url) to HTML <a> tags."""
-    return re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    """Convert markdown links [text](url) to 'text: <a href="url">url</a>' format."""
+    return re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'\1: <a href="\2">\2</a>', text)
 
 
 def parse_resume_md(content: str) -> dict:
