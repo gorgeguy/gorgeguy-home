@@ -883,13 +883,13 @@ def generate_pdf_html(sections: dict) -> str:
         }}
 
         .skills {{
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 3pt;
+            display: block;
         }}
 
         .skill-row {{
+            display: block;
             font-size: 10pt;
+            margin-bottom: 3pt;
         }}
 
         .skill-row .label {{
