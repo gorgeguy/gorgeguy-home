@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-Build script to generate resume.html from RESUME.md.
+Build script to generate resume.html and resume.pdf from RESUME.md.
 
 Usage:
-    uv run build_resume.py
+    uv run build_resume.py          # Generate HTML only
+    uv run build_resume.py --pdf    # Generate HTML and PDF
 
 This parses RESUME.md and generates a styled HTML resume page
 matching the retro terminal aesthetic of the site.
 """
 
+import argparse
 import re
 from pathlib import Path
 
@@ -22,6 +24,7 @@ def parse_resume_md(content: str) -> dict:
         "email": "",
         "summary": "",
         "experience": [],
+        "projects": [],
         "education": "",
         "skills": {},
         "patents": [],
@@ -31,6 +34,7 @@ def parse_resume_md(content: str) -> dict:
     lines = content.strip().split("\n")
     current_section = None
     current_job = None
+    current_project = None
     buffer = []
 
     for line in lines:
@@ -52,6 +56,9 @@ def parse_resume_md(content: str) -> dict:
             if current_job:
                 sections["experience"].append(current_job)
                 current_job = None
+            if current_project:
+                sections["projects"].append(current_project)
+                current_project = None
             buffer = []
 
         # Parse content based on current section
@@ -84,6 +91,26 @@ def parse_resume_md(content: str) -> dict:
             elif line.startswith("- ") and current_job:
                 current_job["duties"].append(line[2:].strip())
 
+        elif current_section == "projects":
+            # Project header: **Project Name — Description**
+            if line.startswith("**") and "—" in line:
+                if current_project:
+                    sections["projects"].append(current_project)
+                match = re.match(r"\*\*(.+?) — (.+?)\*\*", line)
+                if match:
+                    current_project = {
+                        "name": match.group(1),
+                        "description": match.group(2),
+                        "subtitle": "",
+                        "bullets": [],
+                    }
+            # Subtitle line: _AI-Accelerated Development | Nov–Dec 2025_
+            elif line.startswith("_") and current_project:
+                current_project["subtitle"] = line.strip("_").strip()
+            # Bullet point
+            elif line.startswith("- ") and current_project:
+                current_project["bullets"].append(line[2:].strip())
+
         elif current_section == "education":
             if line.startswith("**"):
                 sections["education"] = line.replace("**", "").strip()
@@ -106,9 +133,11 @@ def parse_resume_md(content: str) -> dict:
             if line.strip() and not line.startswith("---"):
                 sections["current_focus"] += line.strip() + " "
 
-    # Don't forget the last job
+    # Don't forget the last job or project
     if current_job:
         sections["experience"].append(current_job)
+    if current_project:
+        sections["projects"].append(current_project)
 
     # Clean up whitespace
     sections["summary"] = sections["summary"].strip()
@@ -135,6 +164,25 @@ def generate_html(sections: dict) -> str:
                             <p class="job-title">{job['title']}</p>
                             <ul class="job-duties">
 {duties_html}
+                            </ul>
+                        </div>
+"""
+
+    # Generate projects HTML
+    projects_html = ""
+    for project in sections["projects"]:
+        bullets_html = "\n".join(
+            f"                                <li>{bullet}</li>" for bullet in project["bullets"]
+        )
+        projects_html += f"""
+                        <div class="project">
+                            <div class="project-header">
+                                <span class="project-name">{project['name']}</span>
+                                <span class="project-subtitle">{project['subtitle']}</span>
+                            </div>
+                            <p class="project-description">{project['description']}</p>
+                            <ul class="project-bullets">
+{bullets_html}
                             </ul>
                         </div>
 """
@@ -409,6 +457,65 @@ def generate_html(sections: dict) -> str:
             color: var(--phosphor-dim);
         }}
 
+        .project {{
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+        }}
+
+        .project-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }}
+
+        .project-name {{
+            font-size: 1.2rem;
+            color: var(--phosphor-green);
+        }}
+
+        .project-subtitle {{
+            font-size: 0.9rem;
+            color: var(--phosphor-dim);
+        }}
+
+        .project-description {{
+            font-size: 1rem;
+            color: var(--phosphor-dim);
+            margin-bottom: 0.5rem;
+        }}
+
+        .project-bullets {{
+            list-style: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }}
+
+        .project-bullets li {{
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.3rem;
+        }}
+
+        .project-bullets li::before {{
+            content: '-';
+            position: absolute;
+            left: 0;
+            color: var(--phosphor-dim);
+        }}
+
+        .project-bullets a {{
+            color: var(--phosphor-green);
+            text-decoration: none;
+        }}
+
+        .project-bullets a:hover {{
+            text-decoration: underline;
+        }}
+
         .skills-grid {{
             display: grid;
             grid-template-columns: auto 1fr;
@@ -571,6 +678,11 @@ def generate_html(sections: dict) -> str:
                     </section>
 
                     <section class="section">
+                        <h2 class="section-title">Projects</h2>
+{projects_html}
+                    </section>
+
+                    <section class="section">
                         <h2 class="section-title">Skills</h2>
                         <div class="skills-grid">
 {skills_html.rstrip()}
@@ -605,11 +717,39 @@ def generate_html(sections: dict) -> str:
     return html
 
 
+def generate_pdf(html_content: str, output_path: Path) -> None:
+    """Generate PDF from HTML content using weasyprint."""
+    try:
+        from weasyprint import HTML
+    except ImportError:
+        print("Error: weasyprint not installed. Run: uv add weasyprint")
+        raise SystemExit(1)
+
+    print(f"Generating PDF at {output_path}...")
+    HTML(string=html_content).write_pdf(output_path)
+
+
 def main():
     """Main entry point."""
+    parser = argparse.ArgumentParser(
+        description="Build resume.html and optionally resume.pdf from RESUME.md"
+    )
+    parser.add_argument(
+        "--pdf",
+        action="store_true",
+        help="Also generate PDF version of the resume",
+    )
+    parser.add_argument(
+        "--pdf-only",
+        action="store_true",
+        help="Only generate PDF (implies --pdf, skips HTML)",
+    )
+    args = parser.parse_args()
+
     script_dir = Path(__file__).parent
     resume_md_path = script_dir / "RESUME.md"
     resume_html_path = script_dir / "resume.html"
+    resume_pdf_path = script_dir / "resume.pdf"
 
     if not resume_md_path.exists():
         print(f"Error: {resume_md_path} not found")
@@ -624,10 +764,15 @@ def main():
     print("Generating HTML...")
     html = generate_html(sections)
 
-    print(f"Writing {resume_html_path}...")
-    resume_html_path.write_text(html)
+    if not args.pdf_only:
+        print(f"Writing {resume_html_path}...")
+        resume_html_path.write_text(html)
+        print("Done! resume.html has been generated.")
 
-    print("Done! resume.html has been generated.")
+    if args.pdf or args.pdf_only:
+        generate_pdf(html, resume_pdf_path)
+        print("Done! resume.pdf has been generated.")
+
     return 0
 
 
