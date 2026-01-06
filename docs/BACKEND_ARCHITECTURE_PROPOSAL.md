@@ -2,7 +2,7 @@
 
 > **Purpose:** Evaluate options for Second Spring's backend to store user state, facts, documents, and workflow progress.  
 > **Status:** Proposal  
-> **Date:** January 2025
+> **Date:** January 2026
 
 ---
 
@@ -107,15 +107,15 @@ Use Vercel Postgres (powered by Neon) for a single-platform architecture.
 ```
 ┌─────────────┐     ┌───────────────────────────────────────┐
 │   Framer    │────▶│               Vercel                  │
-│   (Host)    │     │  ┌─────────────┐    ┌─────────────┐  │
-└─────────────┘     │  │   Next.js   │───▶│  Postgres   │  │
-       │            │  │  (App/API)  │    │   (Neon)    │  │
-       ▼            │  └─────────────┘    └─────────────┘  │
-   Outseta         │         │                             │
-   (Auth)          │         ▼                             │
-                    │  ┌─────────────┐                     │
-                    │  │    Blob     │  (optional)         │
-                    │  └─────────────┘                     │
+│   (Host)    │     │  ┌─────────────┐    ┌─────────────┐   │
+└─────────────┘     │  │   Next.js   │───▶│  Postgres   │   │
+       │            │  │  (App/API)  │    │   (Neon)    │   │
+       ▼            │  └─────────────┘    └─────────────┘   │
+   Outseta          │         │                             │
+   (Auth)           │         ▼                             │
+                    │  ┌─────────────┐                      │
+                    │  │    Blob     │  (optional)          │
+                    │  └─────────────┘                      │
                     └───────────────────────────────────────┘
 ```
 
