@@ -1,1 +1,2 @@
 *.png -filter -diff -merge binary
+*.pdf -filter -diff -merge binary
