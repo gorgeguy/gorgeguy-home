@@ -1,6 +1,6 @@
 ## **Jon Richards**
 **Software Engineer**
-Hood River, Oregon • gorgeguy@gmail.com
+Hood River, Oregon • jon@gorgeguy.com
 
 ---
 

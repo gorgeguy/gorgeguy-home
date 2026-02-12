@@ -48,11 +48,11 @@ def parse_resume_md(content: str) -> dict:
             sections["name"] = line.replace("## **", "").replace("**", "").strip()
         elif line.startswith("**Software Engineer**"):
             sections["title"] = "Software Engineer"
-        elif "gorgeguy@gmail.com" in line:
+        elif "jon@gorgeguy.com" in line:
             parts = line.split("•")
             if len(parts) >= 1:
                 sections["location"] = parts[0].strip()
-            sections["email"] = "gorgeguy@gmail.com"
+            sections["email"] = "jon@gorgeguy.com"
 
         # Detect section headers
         elif line.startswith("### **"):
