@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>My QR Codes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #16161f;
+    --surface-hover: #1e1e2a;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --accent: #6c8aff;
+    --accent-glow: rgba(108, 138, 255, 0.15);
+    --card-radius: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 20px;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 24px 0 16px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* --- Tab strip --- */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    padding: 8px 0 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    scroll-snap-align: start;
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 16px rgba(108, 138, 255, 0.3);
+  }
+
+  .tab:not(.active):hover {
+    background: var(--surface-hover);
+    border-color: var(--text-dim);
+  }
+
+  /* --- QR Card --- */
+  .card-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 8px;
+  }
+
+  .card {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 32px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: cardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.6;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .card-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .card-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    background: var(--accent-glow);
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+
+  .qr-frame {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  .qr-frame canvas, .qr-frame img {
+    display: block;
+    width: 220px !important;
+    height: 220px !important;
+  }
+
+  .card-content {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+    word-break: break-all;
+    line-height: 1.5;
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  /* --- Swipe hint --- */
+  .swipe-hint {
+    text-align: center;
+    padding: 20px 0 12px;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    opacity: 0.5;
+  }
+
+  footer {
+    text-align: center;
+    padding: 8px 0 24px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    opacity: 0.4;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 0;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(108, 138, 255, 0.5);
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  /* --- Edit mode --- */
+  .edit-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+  }
+
+  .edit-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  /* --- Modal --- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80dvh;
+    overflow-y: auto;
+    padding: 24px 20px 40px;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal h2 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .modal label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+
+  .modal label:first-of-type { margin-top: 0; }
+
+  .modal input, .modal textarea, .modal select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  .modal input:focus, .modal textarea:focus, .modal select:focus {
+    border-color: var(--accent);
+  }
+
+  .modal textarea { resize: vertical; min-height: 80px; }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .modal-actions button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    color: var(--text-dim);
+  }
+
+  .btn-save {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-delete {
+    background: transparent;
+    border-color: #ff4466;
+    color: #ff4466;
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* --- Touch swipe area --- */
+  .swipe-area {
+    touch-action: pan-y;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <h1>QR Wallet</h1>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <div class="card-container swipe-area" id="cardContainer">
+    <div class="card" id="card"></div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <div class="swipe-hint">swipe or tap tabs to switch</div>
+
+  <footer>&copy; 2025 <a href="https://gorgeguy.com" target="_blank" rel="noopener">GorgeGuy Solutions</a></footer>
+</div>
+
+<button class="edit-btn" id="editBtn" title="Edit QR codes">&#9998;</button>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <h2 id="modalTitle">Add QR Code</h2>
+    <label for="qrLabel">Label</label>
+    <input type="text" id="qrLabel" placeholder="e.g. My Website" />
+
+    <label for="qrType">Type</label>
+    <select id="qrType">
+      <option value="url">URL</option>
+      <option value="text">Plain Text</option>
+      <option value="wifi">WiFi Network</option>
+      <option value="vcard">Contact (vCard)</option>
+      <option value="email">Email</option>
+      <option value="phone">Phone Number</option>
+    </select>
+
+    <div id="dynamicFields"></div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveQR()">Save</button>
+    </div>
+    <button class="btn-delete" id="deleteBtn" onclick="deleteQR()" style="display:none">Delete This QR</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURE YOUR QR CODES HERE
+// Or use the edit UI to add/remove them (saved to localStorage)
+// ============================================================
+const DEFAULT_CODES = [];
+
+// ============================================================
+// App State
+// ============================================================
+let codes = loadCodes();
+let currentIndex = 0;
+
+function loadCodes() {
+  try {
+    const saved = localStorage.getItem('qr-wallet-codes');
+    if (saved) return JSON.parse(saved);
+  } catch (e) {}
+  return [...DEFAULT_CODES];
+}
+
+function saveCodes() {
+  localStorage.setItem('qr-wallet-codes', JSON.stringify(codes));
+}
+
+// ============================================================
+// QR String Builders
+// ============================================================
+function buildQRString(item) {
+  const d = item.data;
+  switch (item.type) {
+    case 'url':
+      return d.url || '';
+    case 'text':
+      return d.text || '';
+    case 'wifi':
+      return `WIFI:T:${d.encryption || 'WPA'};S:${d.ssid || ''};P:${d.password || ''};;`;
+    case 'vcard':
+      return [
+        'BEGIN:VCARD', 'VERSION:3.0',
+        `FN:${d.name || ''}`,
+        d.phone ? `TEL:${d.phone}` : '',
+        d.email ? `EMAIL:${d.email}` : '',
+        d.url ? `URL:${d.url}` : '',
+        d.org ? `ORG:${d.org}` : '',
+        'END:VCARD'
+      ].filter(Boolean).join('\n');
+    case 'email':
+      const params = [];
+      if (d.subject) params.push(`subject=${encodeURIComponent(d.subject)}`);
+      if (d.body) params.push(`body=${encodeURIComponent(d.body)}`);
+      return `mailto:${d.address || ''}${params.length ? '?' + params.join('&') : ''}`;
+    case 'phone':
+      return `tel:${d.phone || ''}`;
+    default:
+      return '';
+  }
+}
+
+function typeLabel(type) {
+  const map = { url: 'URL', text: 'Text', wifi: 'WiFi', vcard: 'vCard', email: 'Email', phone: 'Phone' };
+  return map[type] || type;
+}
+
+// ============================================================
+// Rendering
+// ============================================================
+function render() {
+  if (codes.length === 0) {
+    document.getElementById('tabs').innerHTML = '';
+    document.getElementById('dots').innerHTML = '';
+    document.getElementById('card').innerHTML = `
+      <div style="padding:40px 0;text-align:center;color:var(--text-dim)">
+        <div style="font-size:2rem;margin-bottom:12px">📱</div>
+        <div>No QR codes yet</div>
+        <div style="font-size:0.85rem;margin-top:8px">Tap ✎ to add one</div>
+      </div>`;
+    return;
+  }
+
+  if (currentIndex >= codes.length) currentIndex = codes.length - 1;
+  const item = codes[currentIndex];
+
+  // Tabs
+  const tabsEl = document.getElementById('tabs');
+  tabsEl.innerHTML = codes.map((c, i) =>
+    `<button class="tab${i === currentIndex ? ' active' : ''}" onclick="switchTo(${i})">${c.label}</button>`
+  ).join('');
+
+  // Scroll active tab into view
+  setTimeout(() => {
+    const activeTab = tabsEl.querySelector('.active');
+    if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, 50);
+
+  // Dots
+  document.getElementById('dots').innerHTML = codes.map((_, i) =>
+    `<div class="dot${i === currentIndex ? ' active' : ''}"></div>`
+  ).join('');
+
+  // Card
+  const qrString = buildQRString(item);
+  const preview = qrString.length > 80 ? qrString.substring(0, 80) + '…' : qrString;
+
+  const cardEl = document.getElementById('card');
+  cardEl.innerHTML = `
+    <div class="card-type">${typeLabel(item.type)}</div>
+    <div class="card-label">${item.label}</div>
+    <div class="qr-frame" id="qrFrame"></div>
+    <div class="card-content">${escapeHtml(preview)}</div>
+  `;
+  cardEl.style.animation = 'none';
+  cardEl.offsetHeight; // reflow
+  cardEl.style.animation = 'cardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+
+  // Generate QR
+  const frame = document.getElementById('qrFrame');
+  new QRCode(frame, {
+    text: qrString,
+    width: 220,
+    height: 220,
+    colorDark: "#0a0a0f",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  // Remove duplicate image (qrcode.js creates both canvas and img)
+  const imgs = frame.querySelectorAll('img');
+  imgs.forEach(img => img.style.display = 'none');
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function switchTo(i) {
+  if (i === currentIndex) return;
+  currentIndex = i;
+  render();
+}
+
+// ============================================================
+// Swipe Handling
+// ============================================================
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.getElementById('cardContainer').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.getElementById('cardContainer').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+    if (dx < 0 && currentIndex < codes.length - 1) switchTo(currentIndex + 1);
+    else if (dx > 0 && currentIndex > 0) switchTo(currentIndex - 1);
+  }
+});
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (document.getElementById('modalOverlay').classList.contains('open')) return;
+  if (e.key === 'ArrowRight' && currentIndex < codes.length - 1) switchTo(currentIndex + 1);
+  if (e.key === 'ArrowLeft' && currentIndex > 0) switchTo(currentIndex - 1);
+});
+
+// ============================================================
+// Edit Modal
+// ============================================================
+let editingIndex = -1;
+
+document.getElementById('editBtn').addEventListener('click', () => openModal());
+
+// Long-press card to edit
+document.getElementById('cardContainer').addEventListener('dblclick', () => {
+  if (codes.length > 0) openModal(currentIndex);
+});
+
+function openModal(index = -1) {
+  editingIndex = index;
+  const modal = document.getElementById('modalOverlay');
+  const title = document.getElementById('modalTitle');
+  const deleteBtn = document.getElementById('deleteBtn');
+
+  if (index >= 0) {
+    title.textContent = 'Edit QR Code';
+    deleteBtn.style.display = 'block';
+    const item = codes[index];
+    document.getElementById('qrLabel').value = item.label;
+    document.getElementById('qrType').value = item.type;
+    renderDynamicFields(item.type, item.data);
+  } else {
+    title.textContent = 'Add QR Code';
+    deleteBtn.style.display = 'none';
+    document.getElementById('qrLabel').value = '';
+    document.getElementById('qrType').value = 'url';
+    renderDynamicFields('url', {});
+  }
+
+  modal.classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editingIndex = -1;
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+document.getElementById('qrType').addEventListener('change', e => {
+  renderDynamicFields(e.target.value, {});
+});
+
+function renderDynamicFields(type, data) {
+  const container = document.getElementById('dynamicFields');
+  let html = '';
+
+  switch (type) {
+    case 'url':
+      html = `<label for="f_url">URL</label><input id="f_url" type="url" placeholder="https://example.com" value="${esc(data.url || '')}"/>`;
+      break;
+    case 'text':
+      html = `<label for="f_text">Text Content</label><textarea id="f_text" placeholder="Any text...">${esc(data.text || '')}</textarea>`;
+      break;
+    case 'wifi':
+      html = `
+        <label for="f_ssid">Network Name (SSID)</label><input id="f_ssid" value="${esc(data.ssid || '')}"/>
+        <label for="f_pass">Password</label><input id="f_pass" value="${esc(data.password || '')}"/>
+        <label for="f_enc">Encryption</label>
+        <select id="f_enc">
+          <option value="WPA" ${data.encryption === 'WPA' ? 'selected' : ''}>WPA/WPA2</option>
+          <option value="WEP" ${data.encryption === 'WEP' ? 'selected' : ''}>WEP</option>
+          <option value="nopass" ${data.encryption === 'nopass' ? 'selected' : ''}>None</option>
+        </select>`;
+      break;
+    case 'vcard':
+      html = `
+        <label for="f_name">Full Name</label><input id="f_name" value="${esc(data.name || '')}"/>
+        <label for="f_phone">Phone</label><input id="f_phone" type="tel" value="${esc(data.phone || '')}"/>
+        <label for="f_email">Email</label><input id="f_email" type="email" value="${esc(data.email || '')}"/>
+        <label for="f_vurl">Website</label><input id="f_vurl" type="url" value="${esc(data.url || '')}"/>
+        <label for="f_org">Organization</label><input id="f_org" value="${esc(data.org || '')}"/>`;
+      break;
+    case 'email':
+      html = `
+        <label for="f_addr">Email Address</label><input id="f_addr" type="email" value="${esc(data.address || '')}"/>
+        <label for="f_subj">Subject</label><input id="f_subj" value="${esc(data.subject || '')}"/>
+        <label for="f_body">Body</label><textarea id="f_body">${esc(data.body || '')}</textarea>`;
+      break;
+    case 'phone':
+      html = `<label for="f_phone">Phone Number</label><input id="f_phone" type="tel" placeholder="+15551234567" value="${esc(data.phone || '')}"/>`;
+      break;
+  }
+
+  container.innerHTML = html;
+}
+
+function esc(s) { return s.replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+function gatherData(type) {
+  const val = id => (document.getElementById(id)?.value || '').trim();
+  switch (type) {
+    case 'url': return { url: val('f_url') };
+    case 'text': return { text: val('f_text') };
+    case 'wifi': return { ssid: val('f_ssid'), password: val('f_pass'), encryption: val('f_enc') };
+    case 'vcard': return { name: val('f_name'), phone: val('f_phone'), email: val('f_email'), url: val('f_vurl'), org: val('f_org') };
+    case 'email': return { address: val('f_addr'), subject: val('f_subj'), body: val('f_body') };
+    case 'phone': return { phone: val('f_phone') };
+    default: return {};
+  }
+}
+
+function saveQR() {
+  const label = document.getElementById('qrLabel').value.trim() || 'Untitled';
+  const type = document.getElementById('qrType').value;
+  const data = gatherData(type);
+
+  if (editingIndex >= 0) {
+    codes[editingIndex] = { label, type, data };
+  } else {
+    codes.push({ label, type, data });
+    currentIndex = codes.length - 1;
+  }
+
+  saveCodes();
+  closeModal();
+  render();
+}
+
+function deleteQR() {
+  if (editingIndex >= 0 && confirm('Delete this QR code?')) {
+    codes.splice(editingIndex, 1);
+    saveCodes();
+    closeModal();
+    render();
+  }
+}
+
+// ============================================================
+// Init
+// ============================================================
+render();
+</script>
+</body>
+</html>
