@@ -42,24 +42,11 @@
     flex-direction: column;
   }
 
-  header {
-    padding: 24px 0 16px;
-    text-align: center;
-  }
-
-  header h1 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-
   /* --- Tab strip --- */
   .tabs {
     display: flex;
     gap: 6px;
-    padding: 8px 0 20px;
+    padding: 16px 0 16px;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -183,18 +170,18 @@
   /* --- Swipe hint --- */
   .swipe-hint {
     text-align: center;
-    padding: 20px 0 12px;
+    padding: 14px 0 10px;
     color: var(--text-dim);
-    font-size: 0.75rem;
-    opacity: 0.5;
+    font-size: 0.85rem;
+    opacity: 0.85;
   }
 
   footer {
     text-align: center;
     padding: 8px 0 24px;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: var(--text-dim);
-    opacity: 0.4;
+    opacity: 0.8;
   }
 
   footer a {
@@ -210,7 +197,7 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    padding: 20px 0;
+    padding: 14px 0;
   }
 
   .dot {
@@ -228,30 +215,55 @@
     border-radius: 3px;
   }
 
-  /* --- Edit mode --- */
-  .edit-btn {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+  .card-edit-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     border: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--surface-hover);
     color: var(--text-dim);
-    font-size: 1.2rem;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    z-index: 10;
+    z-index: 2;
   }
 
-  .edit-btn:hover {
-    background: var(--surface-hover);
+  .card-edit-btn:hover {
     color: var(--text);
     border-color: var(--accent);
+  }
+
+  .tab-add {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px dashed var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+  }
+
+  .tab-add:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+    border-style: solid;
   }
 
   /* --- Modal --- */
@@ -375,10 +387,6 @@
 <body>
 
 <div class="app">
-  <header>
-    <h1>QR Wallet</h1>
-  </header>
-
   <nav class="tabs" id="tabs"></nav>
 
   <div class="card-container swipe-area" id="cardContainer">
@@ -389,10 +397,8 @@
 
   <div class="swipe-hint">swipe or tap tabs to switch</div>
 
-  <footer>&copy; 2025 <a href="https://gorgeguy.com" target="_blank" rel="noopener">GorgeGuy Solutions</a></footer>
+  <footer>&copy; 2026 <a href="https://gorgeguy.com" target="_blank" rel="noopener">GorgeGuy Solutions</a></footer>
 </div>
-
-<button class="edit-btn" id="editBtn" title="Edit QR codes">&#9998;</button>
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modal">
@@ -489,13 +495,14 @@ function typeLabel(type) {
 // ============================================================
 function render() {
   if (codes.length === 0) {
-    document.getElementById('tabs').innerHTML = '';
+    document.getElementById('tabs').innerHTML = `<button class="tab-add" onclick="openModal()" title="Add QR code">+</button>`;
     document.getElementById('dots').innerHTML = '';
     document.getElementById('card').innerHTML = `
       <div style="padding:40px 0;text-align:center;color:var(--text-dim)">
+        <div style="font-size:1.1rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:20px;color:var(--text-dim)">QR Wallet</div>
         <div style="font-size:2rem;margin-bottom:12px">📱</div>
         <div>No QR codes yet</div>
-        <div style="font-size:0.85rem;margin-top:8px">Tap ✎ to add one</div>
+        <div style="font-size:0.85rem;margin-top:8px">Tap + to add one</div>
       </div>`;
     return;
   }
@@ -507,7 +514,7 @@ function render() {
   const tabsEl = document.getElementById('tabs');
   tabsEl.innerHTML = codes.map((c, i) =>
     `<button class="tab${i === currentIndex ? ' active' : ''}" onclick="switchTo(${i})">${c.label}</button>`
-  ).join('');
+  ).join('') + `<button class="tab-add" onclick="openModal()" title="Add QR code">+</button>`;
 
   // Scroll active tab into view
   setTimeout(() => {
@@ -526,6 +533,7 @@ function render() {
 
   const cardEl = document.getElementById('card');
   cardEl.innerHTML = `
+    <button class="card-edit-btn" onclick="openModal(${currentIndex})" title="Edit">&#9998;</button>
     <div class="card-type">${typeLabel(item.type)}</div>
     <div class="card-label">${item.label}</div>
     <div class="qr-frame" id="qrFrame"></div>
@@ -591,13 +599,6 @@ document.addEventListener('keydown', e => {
 // Edit Modal
 // ============================================================
 let editingIndex = -1;
-
-document.getElementById('editBtn').addEventListener('click', () => openModal());
-
-// Long-press card to edit
-document.getElementById('cardContainer').addEventListener('dblclick', () => {
-  if (codes.length > 0) openModal(currentIndex);
-});
 
 function openModal(index = -1) {
   editingIndex = index;
