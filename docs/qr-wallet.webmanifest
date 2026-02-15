@@ -3,7 +3,7 @@
   "short_name": "QR Wallet",
   "id": "/qr-wallet",
   "start_url": "./qr-wallet.html",
-  "scope": "/",
+  "scope": "/qr-wallet.html",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
