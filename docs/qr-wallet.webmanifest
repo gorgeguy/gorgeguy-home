@@ -1,9 +1,9 @@
 {
   "name": "QR Wallet",
   "short_name": "QR Wallet",
-  "id": "/qr-wallet.html",
+  "id": "/qr-wallet",
   "start_url": "./qr-wallet.html",
-  "scope": "./qr-wallet.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
