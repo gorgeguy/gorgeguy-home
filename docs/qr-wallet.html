@@ -475,7 +475,7 @@ function buildQRString(item) {
         d.email ? `EMAIL:${d.email}` : '',
         d.url ? `URL:${d.url}` : '',
         d.org ? `ORG:${d.org}` : '',
-        d.address ? `ADR:;;${d.address};;;;` : '',
+        (d.street || d.city || d.state || d.zip) ? `ADR:;;${d.street || ''};${d.city || ''};${d.state || ''};${d.zip || ''};` : '',
         'END:VCARD'
       ].filter(Boolean).join('\n');
     case 'email':
@@ -671,7 +671,10 @@ function renderDynamicFields(type, data) {
         <label for="f_email">Email</label><input id="f_email" type="email" value="${esc(data.email || '')}"/>
         <label for="f_vurl">Website</label><input id="f_vurl" type="url" value="${esc(data.url || '')}"/>
         <label for="f_org">Organization</label><input id="f_org" value="${esc(data.org || '')}"/>
-        <label for="f_vaddr">Address</label><input id="f_vaddr" value="${esc(data.address || '')}"/>`;
+        <label for="f_street">Street</label><input id="f_street" value="${esc(data.street || data.address || '')}"/>
+        <label for="f_city">City</label><input id="f_city" value="${esc(data.city || '')}"/>
+        <label for="f_state">State</label><input id="f_state" value="${esc(data.state || '')}"/>
+        <label for="f_zip">ZIP</label><input id="f_zip" value="${esc(data.zip || '')}"/>`;
       break;
     case 'email':
       html = `
@@ -695,7 +698,7 @@ function gatherData(type) {
     case 'url': return { url: val('f_url') };
     case 'text': return { text: val('f_text') };
     case 'wifi': return { ssid: val('f_ssid'), password: val('f_pass'), encryption: val('f_enc') };
-    case 'vcard': return { name: val('f_name'), phone: val('f_phone'), email: val('f_email'), url: val('f_vurl'), org: val('f_org'), address: val('f_vaddr') };
+    case 'vcard': return { name: val('f_name'), phone: val('f_phone'), email: val('f_email'), url: val('f_vurl'), org: val('f_org'), street: val('f_street'), city: val('f_city'), state: val('f_state'), zip: val('f_zip') };
     case 'email': return { address: val('f_addr'), subject: val('f_subj'), body: val('f_body') };
     case 'phone': return { phone: val('f_phone') };
     default: return {};
