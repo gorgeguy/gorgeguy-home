@@ -485,6 +485,7 @@
     border-radius: 12px;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none;
     transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     position: relative;
     z-index: 1;
@@ -496,6 +497,11 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px var(--accent);
     z-index: 10;
     transform: scale(1.02);
+  }
+
+  .reorder-list.is-dragging .reorder-item {
+    pointer-events: none;
+    transition: none;
   }
 
   .reorder-handle {
@@ -925,6 +931,7 @@ function openReorder() {
 
 function closeReorder() {
   document.getElementById('reorderOverlay').classList.remove('open');
+  document.getElementById('reorderList').innerHTML = '';
   cleanupDrag();
   render();
 }
@@ -975,9 +982,9 @@ function onDragStart(e) {
     offsetY: clientY - rect.top,
     itemHeight: rect.height + 6,
     clone: null,
-    placeholder: null,
     listTop: listRect.top,
-    itemCount: codes.length
+    itemCount: codes.length,
+    initialCloneTop: rect.top
   };
 
   const clone = item.cloneNode(true);
@@ -989,11 +996,15 @@ function onDragStart(e) {
   clone.style.margin = '0';
   clone.style.pointerEvents = 'none';
   clone.style.zIndex = '200';
+  clone.style.willChange = 'transform';
   document.body.appendChild(clone);
   dragState.clone = clone;
 
   item.style.opacity = '0';
   dragState.originalItem = item;
+
+  list.classList.add('is-dragging');
+  list.closest('.reorder-panel').style.touchAction = 'none';
 
   if (e.type === 'touchstart') {
     document.addEventListener('touchmove', onDragMove, { passive: false });
@@ -1012,7 +1023,8 @@ function onDragMove(e) {
   const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
   const clone = dragState.clone;
 
-  clone.style.top = (clientY - dragState.offsetY) + 'px';
+  const dy = clientY - dragState.offsetY - dragState.initialCloneTop;
+  clone.style.transform = `translateY(${dy}px) scale(1.02)`;
 
   const list = document.getElementById('reorderList');
   const items = Array.from(list.querySelectorAll('.reorder-item'));
@@ -1034,10 +1046,24 @@ function onDragMove(e) {
     const [moved] = codes.splice(dragState.index, 1);
     codes.splice(newIndex, 0, moved);
 
+    // Move DOM node instead of rebuilding entire list
+    const movingItem = items[dragState.index];
+    const targetItem = items[newIndex];
+    if (newIndex > dragState.index) {
+      list.insertBefore(movingItem, targetItem ? targetItem.nextSibling : null);
+    } else {
+      list.insertBefore(movingItem, targetItem);
+    }
+
+    // Update data-index and position numbers
+    Array.from(list.querySelectorAll('.reorder-item')).forEach((el, i) => {
+      el.dataset.index = i;
+      el.querySelector('.reorder-pos').textContent = i + 1;
+    });
+
     dragState.index = newIndex;
     dragState.currentIndex = newIndex;
-
-    rebuildReorderList(newIndex);
+    dragState.originalItem = movingItem;
   }
 }
 
@@ -1067,6 +1093,10 @@ function cleanupDrag() {
   document.removeEventListener('touchcancel', onDragEnd);
   document.removeEventListener('mousemove', onDragMove);
   document.removeEventListener('mouseup', onDragEnd);
+  const list = document.getElementById('reorderList');
+  if (list) list.classList.remove('is-dragging');
+  const panel = document.querySelector('.reorder-panel');
+  if (panel) panel.style.touchAction = '';
   dragState = null;
 }
 
