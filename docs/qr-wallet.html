@@ -386,6 +386,172 @@
   .swipe-area {
     touch-action: pan-y;
   }
+
+  /* --- Reorder button --- */
+  .reorder-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+  }
+
+  .reorder-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* --- Reorder Overlay --- */
+  .reorder-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .reorder-overlay.open { display: flex; }
+
+  .reorder-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85dvh;
+    overflow-y: auto;
+    padding: 20px 16px 32px;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reorder-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  .reorder-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .reorder-done-btn {
+    padding: 8px 20px;
+    border-radius: 100px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reorder-done-btn:hover {
+    box-shadow: 0 2px 16px rgba(108, 138, 255, 0.3);
+  }
+
+  .reorder-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .reorder-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .reorder-item.dragging {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px var(--accent);
+    z-index: 10;
+    transform: scale(1.02);
+  }
+
+  .reorder-handle {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+    line-height: 1;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .reorder-handle:active {
+    cursor: grabbing;
+  }
+
+  .reorder-label {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .reorder-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--accent-glow);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .reorder-pos {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    opacity: 0.5;
+  }
+
+  .reorder-hint {
+    text-align: center;
+    padding: 12px 0 0;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    opacity: 0.5;
+  }
 </style>
 </head>
 <body>
@@ -399,9 +565,20 @@
 
   <div class="dots" id="dots"></div>
 
-  <div class="swipe-hint">swipe or tap tabs to switch</div>
+  <div class="swipe-hint">swipe or tap tabs to switch · ⇅ to reorder</div>
 
   <footer>&copy; 2026 <a href="https://gorgeguy.com" target="_blank" rel="noopener">GorgeGuy Solutions</a></footer>
+</div>
+
+<div class="reorder-overlay" id="reorderOverlay">
+  <div class="reorder-panel">
+    <div class="reorder-header">
+      <h2>Reorder QR Codes</h2>
+      <button class="reorder-done-btn" onclick="closeReorder()">Done</button>
+    </div>
+    <ul class="reorder-list" id="reorderList"></ul>
+    <div class="reorder-hint">drag to reorder · top item shows first</div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -519,7 +696,8 @@ function render() {
   const tabsEl = document.getElementById('tabs');
   tabsEl.innerHTML = codes.map((c, i) =>
     `<button class="tab${i === currentIndex ? ' active' : ''}" onclick="switchTo(${i})">${c.label}</button>`
-  ).join('') + `<button class="tab-add" onclick="openModal()" title="Add QR code">+</button>`;
+  ).join('') + `<button class="tab-add" onclick="openModal()" title="Add QR code">+</button>` +
+  (codes.length > 1 ? `<button class="reorder-btn" onclick="openReorder()" title="Reorder">⇅</button>` : '');
 
   // Scroll active tab into view
   setTimeout(() => {
@@ -596,6 +774,7 @@ document.getElementById('cardContainer').addEventListener('touchend', e => {
 // Keyboard nav
 document.addEventListener('keydown', e => {
   if (document.getElementById('modalOverlay').classList.contains('open')) return;
+  if (document.getElementById('reorderOverlay').classList.contains('open')) return;
   if (e.key === 'ArrowRight' && currentIndex < codes.length - 1) switchTo(currentIndex + 1);
   if (e.key === 'ArrowLeft' && currentIndex > 0) switchTo(currentIndex - 1);
 });
@@ -729,6 +908,166 @@ function deleteQR() {
     closeModal();
     render();
   }
+}
+
+// ============================================================
+// Reorder Panel
+// ============================================================
+let dragState = null;
+let viewedCardBeforeReorder = null;
+
+function openReorder() {
+  viewedCardBeforeReorder = codes[currentIndex];
+  const overlay = document.getElementById('reorderOverlay');
+  rebuildReorderList(-1);
+  overlay.classList.add('open');
+}
+
+function closeReorder() {
+  document.getElementById('reorderOverlay').classList.remove('open');
+  cleanupDrag();
+  render();
+}
+
+document.getElementById('reorderOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeReorder();
+});
+
+function rebuildReorderList(activeIndex) {
+  const list = document.getElementById('reorderList');
+  list.innerHTML = codes.map((c, i) =>
+    `<li class="reorder-item" data-index="${i}" style="${i === activeIndex ? 'opacity:0' : ''}">
+      <span class="reorder-handle">☰</span>
+      <span class="reorder-pos">${i + 1}</span>
+      <span class="reorder-label">${escapeHtml(c.label)}</span>
+      <span class="reorder-type">${typeLabel(c.type)}</span>
+    </li>`
+  ).join('');
+
+  const handles = list.querySelectorAll('.reorder-handle');
+  handles.forEach(handle => {
+    handle.addEventListener('touchstart', onDragStart, { passive: false });
+    handle.addEventListener('mousedown', onDragStart);
+  });
+
+  if (activeIndex >= 0 && dragState) {
+    dragState.originalItem = list.querySelector(`[data-index="${activeIndex}"]`);
+  }
+}
+
+function onDragStart(e) {
+  const item = e.currentTarget.closest('.reorder-item');
+  const index = parseInt(item.dataset.index);
+
+  if (e.type === 'touchstart') {
+    e.preventDefault();
+  }
+
+  const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+  const rect = item.getBoundingClientRect();
+  const list = document.getElementById('reorderList');
+  const listRect = list.getBoundingClientRect();
+
+  dragState = {
+    index,
+    currentIndex: index,
+    startY: clientY,
+    offsetY: clientY - rect.top,
+    itemHeight: rect.height + 6,
+    clone: null,
+    placeholder: null,
+    listTop: listRect.top,
+    itemCount: codes.length
+  };
+
+  const clone = item.cloneNode(true);
+  clone.classList.add('dragging');
+  clone.style.position = 'fixed';
+  clone.style.left = rect.left + 'px';
+  clone.style.width = rect.width + 'px';
+  clone.style.top = rect.top + 'px';
+  clone.style.margin = '0';
+  clone.style.pointerEvents = 'none';
+  clone.style.zIndex = '200';
+  document.body.appendChild(clone);
+  dragState.clone = clone;
+
+  item.style.opacity = '0';
+  dragState.originalItem = item;
+
+  if (e.type === 'touchstart') {
+    document.addEventListener('touchmove', onDragMove, { passive: false });
+    document.addEventListener('touchend', onDragEnd);
+    document.addEventListener('touchcancel', onDragEnd);
+  } else {
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+  }
+}
+
+function onDragMove(e) {
+  if (!dragState) return;
+  if (e.type === 'touchmove') e.preventDefault();
+
+  const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+  const clone = dragState.clone;
+
+  clone.style.top = (clientY - dragState.offsetY) + 'px';
+
+  const list = document.getElementById('reorderList');
+  const items = Array.from(list.querySelectorAll('.reorder-item'));
+
+  let newIndex = dragState.index;
+  for (let i = 0; i < items.length; i++) {
+    const rect = items[i].getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (clientY < midY) {
+      newIndex = i;
+      break;
+    }
+    newIndex = i + 1;
+  }
+
+  newIndex = Math.max(0, Math.min(newIndex, codes.length - 1));
+
+  if (newIndex !== dragState.currentIndex) {
+    const [moved] = codes.splice(dragState.index, 1);
+    codes.splice(newIndex, 0, moved);
+
+    dragState.index = newIndex;
+    dragState.currentIndex = newIndex;
+
+    rebuildReorderList(newIndex);
+  }
+}
+
+function onDragEnd(e) {
+  if (!dragState) return;
+
+  if (dragState.clone) {
+    dragState.clone.remove();
+  }
+
+  if (dragState.originalItem) {
+    dragState.originalItem.style.opacity = '1';
+  }
+
+  saveCodes();
+
+  const idx = codes.indexOf(viewedCardBeforeReorder);
+  currentIndex = idx >= 0 ? idx : 0;
+
+  rebuildReorderList(-1);
+  cleanupDrag();
+}
+
+function cleanupDrag() {
+  document.removeEventListener('touchmove', onDragMove);
+  document.removeEventListener('touchend', onDragEnd);
+  document.removeEventListener('touchcancel', onDragEnd);
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragEnd);
+  dragState = null;
 }
 
 // ============================================================
