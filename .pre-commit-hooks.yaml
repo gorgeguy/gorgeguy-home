@@ -1,0 +1,6 @@
+- id: py-shadow-scan
+  name: py-shadow-scan
+  description: Detect Python names that shadow bindings from outer scopes
+  entry: coding-tools/py_shadow_scan.py
+  language: script
+  types: [python]
