@@ -89,9 +89,11 @@ def assignment_targets(node: ast.AST) -> Iterator[ast.Name]:
 
 
 class ScopeCollector(ast.NodeVisitor):
-    def __init__(self) -> None:
+    def __init__(self, file_path: Path | None = None) -> None:
         self.root = Scope(SCOPE_MODULE, "module", 1)
         self.stack = [self.root]
+        self._file_path = file_path
+        self._is_init_file = file_path is not None and file_path.name == "__init__.py"
 
     @property
     def scope(self) -> Scope:
@@ -157,6 +159,24 @@ class ScopeCollector(ast.NodeVisitor):
                 continue
             local_name = alias.asname or alias.name
             self.scope.add_binding(local_name, node.lineno, "import")
+        implicit_submodule = self._implicit_submodule_name(node)
+        if implicit_submodule is not None:
+            self.scope.add_binding(implicit_submodule, node.lineno, "implicit submodule")
+
+    def _implicit_submodule_name(self, node: ast.ImportFrom) -> str | None:
+        if not self._is_init_file or self.scope.scope_type != SCOPE_MODULE or not node.module:
+            return None
+        if node.level == 1:
+            return node.module.split(".", 1)[0]
+        if node.level != 0 or self._file_path is None:
+            return None
+        candidate = node.module.rsplit(".", 1)[-1]
+        init_dir = self._file_path.parent
+        module_file = init_dir / f"{candidate}.py"
+        module_dir = init_dir / candidate
+        if module_file.exists() or module_dir.is_dir():
+            return candidate
+        return None
 
     def visit_NamedExpr(self, node: ast.NamedExpr) -> None:
         for target in assignment_targets(node.target):
@@ -320,7 +340,7 @@ def analyze_file(path: Path, mode: str) -> list[ShadowIssue]:
     except SyntaxError as exc:
         print(f"{path}:{exc.lineno}: syntax error: {exc.msg}", file=sys.stderr)
         return []
-    collector = ScopeCollector()
+    collector = ScopeCollector(file_path=path)
     collector.visit(tree)
     return find_shadow_issues(path, collector.root, mode)
 

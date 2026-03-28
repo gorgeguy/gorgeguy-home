@@ -48,6 +48,7 @@ It currently reports shadowing for:
 - `with ... as ...` targets
 - `except ... as ...` targets
 - imports
+- implicit submodule bindings created in package `__init__.py` files
 - function/class definitions
 - lambda arguments
 - comprehension variables
