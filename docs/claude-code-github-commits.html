@@ -43,12 +43,12 @@
 </head>
 <body>
 <h1>Claude Code Commits on GitHub</h1>
-<p class="subtitle">Monthly commits containing "Co-Authored-By: Claude" — Jan 2025 to May 2026</p>
+<p class="subtitle">Monthly commits containing "Co-Authored-By: Claude" — Jan 2025 to June 2026</p>
 <div class="chart-wrapper">
   <canvas id="chart"></canvas>
 </div>
 <p class="footer">
-  Source: GitHub Search API. May 2026 is partial (6 days). Counts are directional estimates — GitHub reports incomplete_results on large queries.
+  Source: GitHub Search API. June 2026 is partial (6 days). Counts are directional estimates — GitHub reports incomplete_results on large queries.
 </p>
 <script>
 Chart.register(ChartDataLabels);
@@ -56,13 +56,13 @@ Chart.register(ChartDataLabels);
 const months = [
   'Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25',
   'Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25',
-  'Jan 26','Feb 26','Mar 26','Apr 26','May 26'
+  'Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26'
 ];
 
 const commits = [
   165, 2216, 18907, 16725, 42039, 261067,
   473555, 607580, 564485, 995134, 1155269, 1548108,
-  3193421, 5274544, 10116551, 11854743, 1985006
+  3193421, 5274544, 10116551, 11854743, 12490349, 2959628
 ];
 
 function formatNum(v) {
