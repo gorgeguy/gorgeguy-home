@@ -32,6 +32,23 @@ To fill the template accurately:
 Do NOT read every file. Sample strategically to understand patterns, then
 generalize.
 
+## Generation Requirements
+
+When filling the template, every concrete claim you place into the generated
+prompt — entity states, module/file counts, line numbers, "this subsystem does
+X" — must be either **verified against the code at generation time** or
+explicitly **labeled `unverified` / `documented-but-unverified`**. Design docs
+and READMEs describe intent, not always reality; a state machine or invariant
+lifted from a doc and asserted as fact becomes a false premise the reviewer
+inherits. (Concretely: a prior run asserted an entity lifecycle vocabulary that a
+later review proved had zero occurrences in the codebase.) Counts and sizes are
+inherently point-in-time — phrase them as "currently ~N (verify at run time)".
+
+The generated prompt must also instruct the reviewer to (a) assign every finding
+a **stable ID**, (b) emit a **machine-readable findings index**, and (c) end with
+a **prompt-coverage checklist** — see Expected Output below, which the generated
+prompt should carry forward.
+
 ---
 <!-- BEGIN TEMPLATE -->
 
@@ -272,9 +289,32 @@ Produce:
 5. **Best practices scorecard** — table with pass/fail/partial for each
    practice, with file:line references for failures
 6. **Prioritized refactor roadmap** — fix-now vs. fix-later with complexity
-   estimates
+   estimates. Give every actionable finding a **stable ID** (e.g. `REV-001`)
+   that does not depend on row position; reference it from the scorecard and
+   roadmap so an inserted finding appends an ID rather than renumbering.
 7. **Actionable recommendations** — specific, implementable suggestions with
    file paths and line references
+8. **Findings index** — a machine-readable table (`ID | severity | section |
+   file:line | one-line summary`) covering every finding, so the report can be
+   converted to tracker tickets without re-deriving its structure. Include an
+   **Open Questions for Owners** list for findings whose severity depends on
+   deployment context the review cannot see.
+9. **Prompt-coverage checklist** — a table mapping every Goal and Task bullet in
+   this prompt to the report section addressing it, or an explicit `not assessed`
+   with a one-line reason. "Assessed and unremarkable" and "not assessed" are
+   different outcomes; make the distinction visible so nothing is silently dropped.
+
+**Severity taxonomy.** Use a fixed scale and define it once in the report:
+`Critical` (data loss, security exposure, or silent corruption reachable in
+normal operation), `High` (correctness/security issue requiring a specific
+trigger, or a hard scaling wall), `Medium` (latent bug, durability gap, or
+notable tech debt), `Low` (hygiene/polish). Severity is a property of the
+finding; keep it visible in the index so a tracker can filter by it.
+
+**Claim verification.** Every concrete assertion (a state value, a count, a "no
+occurrences" claim) must be verified against the code at review time with
+file:line evidence, or be explicitly labeled `unverified`. Do not import asserted
+facts — including from this prompt — as ground truth.
 
 Begin by scanning the directory and summarizing the project at a high level,
 then proceed through each task systematically.
@@ -336,3 +376,34 @@ placeholders with lowercase descriptions are guidance for the generator.
 | `{{SCALING_GOALS}}` | Adding Azure/OCI providers, 10x log volume, GCP extractor parity with AWS |
 | `{{SECURITY_CONCERNS}}` | OPSEC boundary (no deception terms in deployed code), no hardcoded credentials, import isolation |
 | `{{PERFORMANCE_CONCERNS}}` | CatalogBuilder memory at 100K+ entities, string interning, orjson vs stdlib json |
+
+---
+
+## Ticket Conversion Handoff
+
+When the report is converted into tracker tickets (Beads/JIRA/Linear/issues),
+the conversion is a second game of telephone — it is where coverage silently
+drops and where tickets acquire anchors that don't survive context loss. Require
+these of the conversion step:
+
+1. **Cite only durable anchors.** Each ticket's source reference must point to a
+   **committed** report anchor: the finding's stable ID (Output 6/8) and/or a
+   section heading that exists in the committed file. Never cite a synthesis
+   label ("Move 3", "north-star diagram", "the plan") that lived only in the
+   generating session and was never committed — a reader without that session
+   cannot resolve it. (This failure is the reason stable IDs exist.)
+2. **Produce a coverage reconciliation table.** Map **every** finding ID from the
+   findings index (Output 8) to the ticket that tracks it, or mark it
+   `not ticketed` with a one-line reason. A finding with no ticket and no reason
+   is a silent drop — the most common conversion defect. Watch for the "narrative
+   bias" failure: cohesive thematic findings cluster into an epic while isolated
+   one-off fixes (often the security quick-wins) fall out of the plan.
+3. **Carry severity across.** The report severity must be visible on the ticket
+   (a label or field), so "what High-severity findings are still untracked or
+   unstarted?" is answerable in the tracker.
+4. **Verify delegated scope.** If a ticket's scope-out says "X is handled by epic
+   Y", confirm epic Y actually contains X before writing it — do not delegate to
+   an epic you have not checked.
+5. **Own every acceptance criterion.** If a ticket's acceptance criteria depend on
+   a capability that has its own prerequisite (e.g. "asserted in CI" when no CI
+   exists), that prerequisite must itself be a ticket the criterion depends on.
