@@ -10,6 +10,7 @@
     <style>
         :root {
             --phosphor-green: #33ff33;
+            --phosphor-bright: #9dff9d;
             --phosphor-dim: #1a8a1a;
             --phosphor-glow: #00ff0050;
             --terminal-bg: #0a0a0a;
@@ -107,6 +108,25 @@
             text-shadow: 0 0 10px var(--phosphor-glow), 0 0 20px var(--phosphor-glow);
         }
 
+        .terminal-content a {
+            color: var(--phosphor-green);
+            text-decoration: none;
+        }
+
+        .terminal-content a:hover {
+            text-decoration: underline;
+        }
+
+        .terminal-content strong {
+            font-weight: 500;
+            color: var(--phosphor-bright);
+        }
+
+        .terminal-content code {
+            font-family: 'Fira Code', monospace;
+            border-bottom: 1px dashed var(--phosphor-dim);
+        }
+
         .crt-screen {
             animation: flicker 0.15s infinite;
         }
@@ -127,8 +147,13 @@
             transition: color 0.2s ease;
         }
 
-        .back-link:hover {
+        .terminal-content .back-link {
+            color: var(--phosphor-dim);
+        }
+
+        .terminal-content .back-link:hover {
             color: var(--phosphor-green);
+            text-decoration: none;
         }
 
         .back-link::before {
@@ -165,15 +190,6 @@
             color: var(--phosphor-dim);
         }
 
-        .resume-contact a {
-            color: var(--phosphor-green);
-            text-decoration: none;
-        }
-
-        .resume-contact a:hover {
-            text-decoration: underline;
-        }
-
         .section {
             margin: 2rem 0;
         }
@@ -192,7 +208,7 @@
             color: var(--phosphor-dim);
         }
 
-        .summary-text {
+        .section-text {
             font-family: 'Fira Code', monospace;
             font-size: 0.9rem;
             line-height: 1.8;
@@ -201,12 +217,16 @@
             border-left: 2px solid var(--phosphor-dim);
         }
 
-        .job {
-            margin-bottom: 1.5rem;
+        .section > .bullets,
+        .entry {
             padding-left: 1rem;
         }
 
-        .job-header {
+        .entry {
+            margin-bottom: 1.5rem;
+        }
+
+        .entry-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -215,102 +235,51 @@
             margin-bottom: 0.5rem;
         }
 
-        .job-company {
+        .entry-org {
             font-size: 1.2rem;
             color: var(--phosphor-green);
         }
 
-        .job-dates {
+        .entry-when {
             font-size: 0.9rem;
             color: var(--phosphor-dim);
         }
 
-        .job-title {
+        .entry-role {
             font-size: 1rem;
             color: var(--phosphor-dim);
             margin-bottom: 0.5rem;
         }
 
-        .job-duties {
+        .bullets {
             list-style: none;
             font-family: 'Fira Code', monospace;
             font-size: 0.85rem;
             line-height: 1.7;
         }
 
-        .job-duties li {
+        .bullets li {
             position: relative;
             padding-left: 1.5rem;
             margin-bottom: 0.3rem;
         }
 
-        .job-duties li::before {
+        .bullets li::before {
             content: '-';
             position: absolute;
             left: 0;
             color: var(--phosphor-dim);
         }
 
-        .project {
-            margin-bottom: 1.5rem;
-            padding-left: 1rem;
+        .bullets .bullets {
+            margin-top: 0.3rem;
         }
 
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+        .bullets .bullets li::before {
+            content: '\00b7';
         }
 
-        .project-name {
-            font-size: 1.2rem;
-            color: var(--phosphor-green);
-        }
-
-        .project-subtitle {
-            font-size: 0.9rem;
-            color: var(--phosphor-dim);
-        }
-
-        .project-description {
-            font-size: 1rem;
-            color: var(--phosphor-dim);
-            margin-bottom: 0.5rem;
-        }
-
-        .project-bullets {
-            list-style: none;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            line-height: 1.7;
-        }
-
-        .project-bullets li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .project-bullets li::before {
-            content: '-';
-            position: absolute;
-            left: 0;
-            color: var(--phosphor-dim);
-        }
-
-        .project-bullets a {
-            color: var(--phosphor-green);
-            text-decoration: none;
-        }
-
-        .project-bullets a:hover {
-            text-decoration: underline;
-        }
-
-        .skills-grid {
+        .pairs {
             display: grid;
             grid-template-columns: auto 1fr;
             gap: 0.5rem 1.5rem;
@@ -319,39 +288,16 @@
             padding-left: 1rem;
         }
 
-        .skill-label {
+        .pair {
+            display: contents;
+        }
+
+        .pair-label {
             color: var(--phosphor-dim);
         }
 
-        .skill-value {
+        .pair-value {
             color: var(--phosphor-green);
-        }
-
-        .patents-list {
-            list-style: none;
-            padding-left: 1rem;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-        }
-
-        .patents-list li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .patent-number {
-            color: var(--phosphor-green);
-        }
-
-        .patent-title {
-            color: var(--phosphor-dim);
-        }
-
-        .education-item {
-            padding-left: 1rem;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.95rem;
         }
 
         .status-bar {
@@ -402,9 +348,12 @@
 
         @media (max-width: 600px) {
             html { font-size: 14px; }
+            body { padding: 0.75rem; }
             .crt-bezel { padding: 15px; }
             .crt-screen { padding: 1rem; }
-            .job-header { flex-direction: column; }
+            .entry-header { flex-direction: column; }
+            .pairs { grid-template-columns: 1fr; gap: 0.1rem; }
+            .pair-value { margin-bottom: 0.5rem; }
         }
 
         @media print {
@@ -437,6 +386,7 @@
             }
             :root {
                 --phosphor-green: #000;
+                --phosphor-bright: #000;
                 --phosphor-dim: #555;
             }
         }
@@ -452,115 +402,118 @@
                     <header class="file-header">
                         <div class="file-path">~/documents/resume.txt</div>
                         <h1 class="resume-name">Jon Richards</h1>
-                        <p class="resume-title">Software Engineer</p>
-                        <p class="resume-contact">
-                            Hood River, Oregon |
-                            <a href="mailto:jon@gorgeguy.com">jon@gorgeguy.com</a>
-                        </p>
+                        <p class="resume-title">Software Development Consultant · Agentic Engineering</p>
+                        <p class="resume-contact">Hood River, Oregon | <a href="mailto:jon@gorgeguy.com">jon@gorgeguy.com</a> | <a href="https://gorgeguy.com">gorgeguy.com</a> | <a href="https://github.com/gorgeguy">github.com/gorgeguy</a></p>
                     </header>
 
-                    <section class="section">
-                        <h2 class="section-title">Summary</h2>
-                        <p class="summary-text">
-                            I'm passionate about how AI is transforming software engineering. My focus is twofold: helping build products that integrate AI to solve real-world problems, and bringing AI-powered tools into development processes to dramatically increase engineering velocity and impact. With decades of backend and automation experience, I'm exploring how AI can be used not just as a feature, but as a force multiplier for innovation.
-                        </p>
-                    </section>
+<section class="section">
+<h2 class="section-title">Summary</h2>
+<p class="section-text">I build software, and I help businesses adapt how they build it as AI coding agents take over more of the work. My 33 years span databases, infrastructure automation and multicloud platforms (AWS, GCP, Azure, OCI), at Informix, at Oracle and now with a multicloud SaaS client. Since 2025 I have built nearly everything by directing Claude Code and OpenAI Codex, often several agents at once, along with the reviews, gates and habits that make their output trustworthy. Agents made writing code in any language cheap. What they didn't make cheap is knowing what to build and whether it's right, and that comes from domain depth.</p>
+</section>
 
-                    <section class="section">
-                        <h2 class="section-title">Experience</h2>
+<section class="section">
+<h2 class="section-title">How I Work With Agents</h2>
+<ul class="bullets">
+<li><strong>A shared team agent with written delegation rules: about 1,000 requests in six weeks, 65% from five teammates.</strong> Engineers ask it in Slack for PR reviews, root-cause analysis, fixes and builds. Its rules say who may request a merge, pre-authorize small fixes within six scope limits, attribute every PR to its requester, and re-run CI before any merge.</li>
+<li><strong>Plan → tickets → autonomous execution → human gates.</strong> Designs become dependency-safe tickets and are audited with fresh eyes. Agents then work them one at a time, claim tickets atomically, and escalate to a person when blocked (319 tickets closed autonomously, 32 escalated).</li>
+<li><strong>Parallel agents without collisions.</strong> I run 3–9 agent sessions at once in isolated git worktrees. One landing coordinator merges their work, history is merge-only, and quality gates run on the integrated commit.</li>
+<li><strong>Cross-model review.</strong> Codex reviews Claude's plans and code, and Claude reviews Codex's. Every finding is checked against the code before anyone acts on it. Built agent-review-loop (open source) so two agents can iterate as editor and reviewer.</li>
+<li><strong>Long-horizon autonomy.</strong> Goal-driven agent runs of up to 64 hours for end-to-end cloud validation, with explicit completion criteria and stop conditions.</li>
+<li><strong>Context first.</strong> My agents work from the same context I do. Claude Briefcase (below) gathers my email, calendar, meeting notes, Slack, Jira and pull requests into notes and a tracker that any agent session can query.</li>
+<li><strong>Agent-safe hygiene.</strong><ul class="bullets"><li>Typed credential descriptors let agents call APIs without secrets reaching command lines, logs or transcripts.</li><li>Provenance rules keep unverified content out of recorded decisions.</li><li>Each repo has one <code>AGENTS.md</code>, read by Claude Code, Codex and Cursor alike.</li></ul></li>
+<li><strong>Teaching it.</strong> Led an agentic-engineering session for a client's engineering team. Packaged the team's review standards as one skill that installs into Codex, Claude Code and Cursor.</li>
+</ul>
+</section>
 
-                        <div class="job">
-                            <div class="job-header">
-                                <span class="job-company">Oracle Corporation</span>
-                                <span class="job-dates">1999–2025 | Hillsboro, OR</span>
-                            </div>
-                            <p class="job-title">Software Engineer</p>
-                            <ul class="job-duties">
-                                <li>Most recently worked in the OCI Region Build Automation teams, helping create and maintain applications and processes used in the construction of new data centers worldwide.</li>
-                                <li>Led design and implementation of PXE-based device installation and configuration utilities using Python (OCI SDK) and Bash, streamlining setup for OCI Roving Edge Infrastructure devices.</li>
-                                <li>Automated full-rack backup and restore workflows for Oracle Cloud at Customer, cutting iteration time from 5 days to 5 hours.</li>
-                                <li>Designed benchmarking framework for OCI Digital Media Services to measure FFmpeg transcode performance across compute shapes.</li>
-                                <li>Co-invented patented VM image generation technology for multi-tier installations.</li>
-                            </ul>
-                        </div>
+<section class="section">
+<h2 class="section-title">Domains</h2>
+<ul class="bullets">
+<li><strong>Cloud platforms: AWS, GCP, Azure, OCI.</strong> Multi-account organizations, IAM, serverless and event-driven services, infrastructure as code.</li>
+<li><strong>High-volume data pipelines.</strong> Event ingestion and processing across clouds, plus the performance engineering to make it fast.</li>
+<li><strong>Multicloud SaaS platforms.</strong> Provider-plugin architecture, versioned data contracts, in-place upgrades.</li>
+<li><strong>Databases.</strong> From RDBMS kernel internals (threading, BLOB storage, transaction logging) to Postgres schema unification and migrations.</li>
+<li><strong>Infrastructure and provisioning automation.</strong> Cloud region build-out, bare-metal/PXE edge provisioning, rack-scale backup and restore, VM image assembly (2 patents).</li>
+<li><strong>Release engineering.</strong> CI gating, VM-based release qualification, runtime and dependency patching.</li>
+<li><strong>Product software.</strong> Mobile and web community apps; small-business bookkeeping automation.</li>
+</ul>
+</section>
 
-                        <div class="job">
-                            <div class="job-header">
-                                <span class="job-company">Informix Corporation</span>
-                                <span class="job-dates">1993–1999 | Portland, OR</span>
-                            </div>
-                            <p class="job-title">Software Engineer</p>
-                            <ul class="job-duties">
-                                <li>Developed non-preemptive threading library in assembly for SMP architectures used in RDBMS kernel development.</li>
-                                <li>Built real-time graphical tool for monitoring parallel SQL queries.</li>
-                                <li>Implemented Binary Large Object (BLOB) storage and enhanced transactional logging subsystems.</li>
-                            </ul>
-                        </div>
+<section class="section">
+<h2 class="section-title">Experience</h2>
+<div class="entry">
+<div class="entry-header"><span class="entry-org">Multicloud SaaS company (client of GorgeGuy Solutions)</span><span class="entry-when">2026–present | Remote</span></div>
+<p class="entry-role">Software Development Consultant</p>
+<ul class="bullets">
+<li><strong>Core services.</strong> Designed and built core services for a multicloud product across AWS, GCP and Azure.</li>
+<li><strong>Pipeline performance.</strong> Cut a high-volume event pipeline's runtime by 52% and raised its throughput by 87%.</li>
+<li><strong>Codebase consolidation.</strong> Led the merge of separate per-cloud codebases into one multicloud codebase, using a provider-plugin architecture and versioned data contracts enforced by contract tests.</li>
+<li><strong>Database.</strong> Unified the Postgres schema across cloud providers and built the numbered, re-runnable migration path for in-place product upgrades.</li>
+<li><strong>CI and release qualification.</strong><ul class="bullets"><li>Added CI gating on every pull request.</li><li>Built an on-demand release-qualification job: it provisions a clean VM, installs the release, verifies services, and always cleans up.</li></ul></li>
+<li><strong>Patching.</strong> Kept the runtime and dependencies current: Node and Python patch floors, CA trust-store corrections, dependency audits.</li>
+<li><strong>Team practice.</strong> One of the primary cross-team code reviewers. Introduced the team's shared agent, agent instructions and review standards (see above).</li>
+</ul>
+</div>
+<div class="entry">
+<div class="entry-header"><span class="entry-org">GorgeGuy Solutions</span><span class="entry-when">2025–present | Hood River, OR</span></div>
+<p class="entry-role">Founder &amp; Software Development Consultant</p>
+<ul class="bullets">
+<li><strong>Consulting.</strong> I build software for clients and for my own products. I also help businesses adapt their development practices to agentic engineering: standards, workflows, review gates, shared team agents and training.</li>
+<li><strong>Claude Briefcase</strong> (my creation; open source) is a personal work-intelligence system run by Claude Code.<ul class="bullets"><li>It pulls from Gmail, Google Calendar, Google Drive meeting transcripts, Slack channels and DMs, Jira and Bitbucket.</li><li>It turns that into structured notes, an action and decision tracker, and a daily briefing delivered to me in Slack.</li><li>In daily use for eight months, it has processed 1,100+ email threads and 600+ Slack threads into 260+ notes, and tracked 160+ Jira issues.</li></ul></li>
+<li><strong>Briefcase workboard.</strong> Its personal app is a live workboard: an always-on local web app where I reprioritize, defer and close work.<ul class="bullets"><li>My edits on the board feed into the next briefing.</li><li>Pull requests and tickets close themselves when their system of record says they're done.</li></ul></li>
+<li><strong>Briefcase ad-hoc queries.</strong> Between briefings I ask it questions and it acts on the answers: "What is my client asking of me today?" "Which of my PRs cover the Node 24 upgrade?" and then "Add these two reviewers to both." It answers from the collected context and makes the change.</li>
+<li><strong>Briefcase architecture.</strong> Subagents fetch issue-tracker and pull-request data, so raw API output never crowds the main context. Mail and documents come through a self-hosted, read-only Google Workspace MCP server.</li>
+<li><strong>pbmatch:</strong> an iOS, Android and web app for organizing pickup games (Expo/React Native, Supabase/Postgres).<ul class="bullets"><li>Built by three coordinated agents working in separate worktrees and claiming tickets from a shared queue.</li><li>UI changes are verified across iOS, Android and web at normal and large text sizes: 132 dated verification records and 79 automated UI flows to date.</li></ul></li>
+<li><strong>PB Tourney:</strong> a full-stack tournament app (FastAPI, React, Postgres): 262 commits and 382 tests in 51 days. My first all-agent build (Nov 2025).</li>
+<li><strong>port-manager:</strong> a Rust CLI published on crates.io, shipped without prior Rust experience.</li>
+</ul>
+</div>
+<div class="entry">
+<div class="entry-header"><span class="entry-org">Oracle Corporation</span><span class="entry-when">1999–2025 | Hillsboro, OR</span></div>
+<p class="entry-role">Principal Software Engineer</p>
+<ul class="bullets">
+<li><strong>Cloud region build automation:</strong> built and maintained the applications and processes used to construct new OCI data centers worldwide.</li>
+<li><strong>Edge provisioning:</strong> led design and implementation of PXE-based installation and configuration for OCI Roving Edge Infrastructure devices.</li>
+<li><strong>Backup and restore:</strong> automated full-rack backup and restore for Oracle Cloud at Customer, cutting iteration time from 5 days to 5 hours.</li>
+<li><strong>Media performance:</strong> designed a benchmarking framework for OCI Digital Media Services that measures FFmpeg transcode performance across compute shapes.</li>
+<li><strong>Virtualization:</strong> co-invented patented VM image assembly technology for multi-tier installations.</li>
+</ul>
+</div>
+<div class="entry">
+<div class="entry-header"><span class="entry-org">Informix Corporation</span><span class="entry-when">1993–1999 | Portland, OR</span></div>
+<p class="entry-role">Software Engineer</p>
+<ul class="bullets">
+<li><strong>Database kernel:</strong> developed a non-preemptive threading library in assembly for SMP architectures.</li>
+<li><strong>Query observability:</strong> built a real-time graphical tool for monitoring parallel SQL queries.</li>
+<li><strong>Storage:</strong> implemented Binary Large Object (BLOB) storage and enhanced the transaction logging subsystems.</li>
+</ul>
+</div>
+</section>
 
-                    </section>
+<section class="section">
+<h2 class="section-title">Patents</h2>
+<ul class="bullets">
+<li><em>US 9,690,607</em> — Automated VM assembly and deployment (2017)</li>
+<li><em>US 9,612,803</em> — Multi-node virtual appliance construction (2017)</li>
+</ul>
+</section>
 
-                    <section class="section">
-                        <h2 class="section-title">Projects</h2>
+<section class="section">
+<h2 class="section-title">Education</h2>
+<p class="section-text"><strong>B.S. Computer Science</strong> — Portland State University, Portland, OR</p>
+</section>
 
-                        <div class="project">
-                            <div class="project-header">
-                                <span class="project-name">PB Tourney</span>
-                                <span class="project-subtitle">AI-Accelerated Development | Nov–Dec 2025</span>
-                            </div>
-                            <p class="project-description">Full-Stack Tournament Management System</p>
-                            <ul class="project-bullets">
-                                <li>Built production-ready tournament management application in 51 days with entirely AI-assisted implementation using Claude Code — 262 commits, 32K lines of code, 382 automated tests.</li>
-                                <li>Backend: Python 3.12, FastAPI, SQLAlchemy 2.0, Pydantic, JWT authentication, PostgreSQL</li>
-                                <li>Frontend: React 19, TypeScript, TanStack Query, React Hook Form, Tailwind CSS, Vite</li>
-                                <li>DevOps: Docker multi-stage builds, GitHub Actions CI/CD, Fly.io deployment, Caddy</li>
-                                <li>Architecture: Repository pattern, dependency injection, domain-driven design, comprehensive test coverage</li>
-                                <li>Project Details: <a href="https://github.com/gorgeguy/gorgeguy-home/blob/main/projects/PBTOURNEY.md">https://github.com/gorgeguy/gorgeguy-home/blob/main/projects/PBTOURNEY.md</a></li>
-                            </ul>
-                        </div>
-
-                    </section>
-
-                    <section class="section">
-                        <h2 class="section-title">Skills</h2>
-                        <div class="skills-grid">
-                            <span class="skill-label">Languages:</span>
-                            <span class="skill-value">Python, TypeScript, Bash, C, Java, SQL</span>
-
-                            <span class="skill-label">Backend:</span>
-                            <span class="skill-value">FastAPI, SQLAlchemy, Pydantic, REST APIs, JWT, PostgreSQL</span>
-
-                            <span class="skill-label">Frontend:</span>
-                            <span class="skill-value">React, TanStack Query, Tailwind CSS, Vite</span>
-
-                            <span class="skill-label">DevOps:</span>
-                            <span class="skill-value">Docker, GitHub Actions, CI/CD, Fly.io, Linux, OCI</span>
-
-                            <span class="skill-label">Tools:</span>
-                            <span class="skill-value">Claude Code, VS Code, Cursor, Git, pytest, Ruff, Pyright</span>
-
-                            <span class="skill-label">Patterns:</span>
-                            <span class="skill-value">Repository Pattern, Dependency Injection, TDD, Domain-Driven Design</span>
-                        </div>
-                    </section>
-
-                    <section class="section">
-                        <h2 class="section-title">Patents</h2>
-                        <ul class="patents-list">
-                            <li>
-                                <span class="patent-number">US 9,690,607</span>
-                                <span class="patent-title">— Automated VM assembly and deployment (2017)</span>
-                            </li>
-                            <li>
-                                <span class="patent-number">US 9,612,803</span>
-                                <span class="patent-title">— Multi-node virtual appliance construction (2017)</span>
-                            </li>
-                        </ul>
-                    </section>
-
-                    <section class="section">
-                        <h2 class="section-title">Education</h2>
-                        <p class="education-item">B.S. Computer Science — Portland State University, Portland, OR</p>
-                    </section>
+<section class="section">
+<h2 class="section-title">Implementation</h2>
+<div class="pairs">
+<div class="pair"><span class="pair-label">Agents:</span> <span class="pair-value">Claude Code, OpenAI Codex, Cursor, MCP servers, Beads</span></div>
+<div class="pair"><span class="pair-label">Languages:</span> <span class="pair-value">Python, JavaScript and TypeScript (Node.js, React, React Native), SQL (Postgres), Bash, Rust; earlier in my career, Java, C and assembly</span></div>
+<div class="pair"><span class="pair-label">AWS:</span> <span class="pair-value">Lambda, SQS, SNS, S3, EventBridge, CloudFormation and SAM, CodeBuild, CodeDeploy, CodeArtifact, IAM, Organizations, Systems Manager, Secrets Manager, CloudWatch, EC2</span></div>
+<div class="pair"><span class="pair-label">GCP:</span> <span class="pair-value">Cloud Functions, Cloud Run, Eventarc, Pub/Sub, Cloud Storage, Secret Manager, Cloud KMS, IAM</span></div>
+<div class="pair"><span class="pair-label">Azure:</span> <span class="pair-value">Azure Functions, Event Hubs, Blob Storage, Resource Manager, Entra ID</span></div>
+<div class="pair"><span class="pair-label">OCI:</span> <span class="pair-value">Compute, Container Instances, OCI SDK and CLI</span></div>
+<div class="pair"><span class="pair-label">Delivery and runtime:</span> <span class="pair-value">Bitbucket Pipelines, GitHub Actions, Docker, Linux/systemd, Postgres, Redis, Express, FastAPI, Supabase</span></div>
+</div>
+</section>
 
                     <div class="status-bar">
                         <span>:wq to save and exit</span>
