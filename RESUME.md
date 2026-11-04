@@ -5,7 +5,7 @@ Hood River, Oregon • jon@gorgeguy.com • gorgeguy.com • github.com/gorgeguy
 ---
 
 ### **Summary**
-I build software, and I help businesses adapt how they build it as AI coding agents take over more of the work. My 33 years span databases, infrastructure automation and multicloud platforms (AWS, GCP, Azure, OCI), at Informix, at Oracle and now with a multicloud SaaS client. Since 2025 I have built nearly everything by directing Claude Code and OpenAI Codex, often several agents at once, along with the reviews, gates and habits that make their output trustworthy. Agents made writing code in any language cheap. What they didn't make cheap is knowing what to build and whether it's right, and that comes from domain depth.
+I build software, and I help businesses adapt how they build it as AI coding agents take over more of the work. My 33 years span databases, infrastructure automation and multicloud platforms (AWS, GCP, Azure, OCI), at Informix, at Oracle and now with a multicloud SaaS client. Since 2025 I have built nearly everything by directing Claude Code and OpenAI Codex, often several agents at once, along with the reviews, gates and habits that make their output trustworthy. Agents made writing code in any language cheap. What they didn't make cheap is knowing what to build and whether it's right, and that comes from domain depth. This is the most interesting shift of my career, and I share what I learn as I go.
 
 ---
 
