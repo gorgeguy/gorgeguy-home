@@ -75,7 +75,7 @@ _Hillsboro, OR | 1999–2025_
 - **Media performance:** designed a benchmarking framework for OCI Digital Media Services that measures FFmpeg transcode performance across compute shapes.
 - **Virtualization:** co-invented patented VM image assembly technology for multi-tier installations.
 
-**Informix Corporation — Software Engineer**
+**Informix Corporation — Senior Software Engineer**
 _Portland, OR | 1993–1999_
 - **Database kernel:** developed a non-preemptive threading library in assembly for SMP architectures.
 - **Query observability:** built a real-time graphical tool for monitoring parallel SQL queries.
